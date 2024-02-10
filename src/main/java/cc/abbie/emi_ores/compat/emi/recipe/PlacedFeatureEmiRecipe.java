@@ -18,6 +18,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -25,10 +26,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.TrapezoidHeight;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
-import net.minecraft.world.level.levelgen.placement.BiomeFilter;
-import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import org.jetbrains.annotations.Nullable;
@@ -47,7 +45,9 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
     private final HeightProvider heightProvider;
     private final EmiIngredient biomes;
     private final float discardChanceOnAirExposure;
-    private final int size;
+    private final int countMin;
+    private final int countMax;
+    private final int rarityChance;
 
     public PlacedFeatureEmiRecipe(PlacedFeature feature, ResourceLocation id) {
         this.id = id;
@@ -55,6 +55,8 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
         List<EmiIngredient> inputs = new ArrayList<>();
         List<EmiStack> outputs = new ArrayList<>();
         OreConfiguration oreConfig = (OreConfiguration) feature.feature().value().config();
+        this.discardChanceOnAirExposure = oreConfig.discardChanceOnAirExposure;
+
         oreConfig.targetStates.forEach(targetBlockState -> {
             var target = targetBlockState.target;
             if (target instanceof TagMatchTest tagMatchTest) {
@@ -71,16 +73,16 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
                 inputs.add(EmiStack.EMPTY);
             }
 
-            outputs.add(EmiStack.of(targetBlockState.state.getBlock()));
+            outputs.add(EmiStack.of(targetBlockState.state.getBlock()).setAmount(oreConfig.size));
         });
         this.inputs = Collections.unmodifiableList(inputs);
         this.outputs = Collections.unmodifiableList(outputs);
 
-        this.discardChanceOnAirExposure = oreConfig.discardChanceOnAirExposure;
-        this.size = oreConfig.size;
-
         HeightProvider heightProvider = null;
         List<Biome> biomes = List.of();
+        int countMin = -1;
+        int countMax = -1;
+        int rarityChance = -1;
         for (PlacementModifier modifier : feature.placement()) {
             if (modifier instanceof HeightRangePlacement heightRange) {
                 heightProvider = ((HeightRangePlacementAccessor) heightRange).getHeight();
@@ -100,8 +102,17 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
                             }
                             return false;
                         }).toList();
+            } else if (modifier instanceof CountPlacement countPlacement) {
+                IntProvider countIntProvider = ((CountPlacementAccessor) countPlacement).getCount();
+                countMin = countIntProvider.getMinValue();
+                countMax = countIntProvider.getMaxValue();
+            } else if (modifier instanceof RarityFilter rarityFilter) {
+                rarityChance = ((RarityFilterAccessor) rarityFilter).getChance();
             }
         }
+        this.countMin = countMin;
+        this.countMax = countMax;
+        this.rarityChance = rarityChance;
         this.heightProvider = heightProvider;
         this.biomes = EmiIngredient.of(biomes.stream().map(BiomeEmiStack::new).toList());
     }
@@ -133,7 +144,7 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayHeight() {
-        return 18 + 18 * inputs.size();
+        return Math.max(54, 18 + 18 * inputs.size());
     }
 
     @Override
@@ -183,6 +194,21 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
 
         widgets.addSlot(EmiStack.of(Items.BARRIER).setChance(discardChanceOnAirExposure), 142, 18);
 
+        if (countMin != -1 && countMax != -1) {
+            if (countMin == countMax) {
+                widgets.addText(Component.translatable("emi_ores.veins_per_chunk", countMin), 160, 45, 0, false)
+                        .horizontalAlign(TextWidget.Alignment.END)
+                        .verticalAlign(TextWidget.Alignment.CENTER);
+            } else {
+                widgets.addText(Component.translatable("emi_ores.veins_per_chunk_range", countMin, countMax), 160, 45, 0, false)
+                        .horizontalAlign(TextWidget.Alignment.END)
+                        .verticalAlign(TextWidget.Alignment.CENTER);
+            }
+        } else if (rarityChance != -1) {
+            widgets.addText(Component.translatable("emi_ores.rarity_chance", rarityChance), 160, 45, 0, false)
+                    .horizontalAlign(TextWidget.Alignment.END)
+                        .verticalAlign(TextWidget.Alignment.CENTER);
+        }
     }
 
     private static Component anchorText(VerticalAnchor anchor) {
