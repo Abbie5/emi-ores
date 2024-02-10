@@ -192,7 +192,8 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
         if (!biomes.isEmpty())
             widgets.addSlot(biomes, 96, 18);
 
-        widgets.addSlot(EmiStack.of(Items.BARRIER).setChance(discardChanceOnAirExposure), 142, 18);
+        if (discardChanceOnAirExposure > 0)
+            widgets.addSlot(EmiStack.of(Items.BARRIER).setChance(discardChanceOnAirExposure), 142, 18);
 
         if (countMin != -1 && countMax != -1) {
             if (countMin == countMax) {
