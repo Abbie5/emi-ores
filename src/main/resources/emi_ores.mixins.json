@@ -4,6 +4,11 @@
   "package": "cc.abbie.emi_ores.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "accessor.BlockMatchTestAccessor",
+    "accessor.HeightRangePlacementAccessor",
+    "accessor.TagMatchTestAccessor",
+    "accessor.TrapezoidHeightAccessor",
+    "accessor.UniformHeightAccessor"
   ],
   "client": [
   ],
