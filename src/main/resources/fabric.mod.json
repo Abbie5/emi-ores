@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "emi_ores",
+  "version": "${version}",
+  "name": "EMI Ores",
+  "authors": [
+    "Abbie"
+  ],
+  "license": "LGPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "cc.abbie.emi_ores.client.EmiOresClient"
+    ],
+    "main": [
+      "cc.abbie.emi_ores.EmiOres"
+    ],
+    "emi": [
+      "cc.abbie.emi_ores.compat.emi.EmiOresEmiPlugin"
+    ]
+  },
+  "mixins": [
+    "emi_ores.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}",
+    "emi": ">=${emi_version}"
+  }
+}
