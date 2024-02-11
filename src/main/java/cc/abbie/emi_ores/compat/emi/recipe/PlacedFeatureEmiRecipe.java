@@ -167,29 +167,55 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
         }
 
         if (heightProvider != null) {
+            int v;
+            VerticalAnchor min;
+            VerticalAnchor max;
+
             if (heightProvider instanceof UniformHeight uniform) {
+                v = 0;
                 UniformHeightAccessor accessor = (UniformHeightAccessor) uniform;
-                widgets.addTexture(DISTRIBUTION, 64, 0, 32, 16, 0, 0);
-                widgets.addText(anchorText(accessor.getMinInclusive()), 64, 8, 0, false)
-                        .verticalAlign(TextWidget.Alignment.CENTER)
-                        .horizontalAlign(TextWidget.Alignment.END);
-                widgets.addText(anchorText(accessor.getMaxInclusive()), 96, 8, 0, false)
-                        .verticalAlign(TextWidget.Alignment.CENTER)
-                        .horizontalAlign(TextWidget.Alignment.START);
+                min = accessor.getMinInclusive();
+                max = accessor.getMaxInclusive();
             } else if (heightProvider instanceof TrapezoidHeight trapezoid) {
                 TrapezoidHeightAccessor accessor = (TrapezoidHeightAccessor) trapezoid;
+                min = accessor.getMinInclusive();
+                max = accessor.getMaxInclusive();
+
                 if (accessor.getPlateau() == 0) {
-                    widgets.addTexture(DISTRIBUTION, 64, 0, 32, 16, 0, 16);
+                    v = 16;
+
+                    // if the min and max are the same type, we can calculate the y-level with the highest frequency
+                    Integer mid;
+                    if (min instanceof VerticalAnchor.Absolute minAbs && max instanceof VerticalAnchor.Absolute maxAbs) {
+                        mid = (minAbs.y() + maxAbs.y()) / 2;
+                    } else if (min instanceof VerticalAnchor.AboveBottom minBot && max instanceof VerticalAnchor.AboveBottom maxBot) {
+                        mid = (minBot.offset() + maxBot.offset()) / 2;
+                    } else if (min instanceof VerticalAnchor.BelowTop minTop && max instanceof VerticalAnchor.BelowTop maxTop) {
+                        mid = (minTop.offset() + maxTop.offset()) / 2;
+                    } else {
+                        mid = null;
+                    }
+
+                    if (mid != null) {
+                        widgets.addText(Component.literal(String.valueOf(mid)), 80, 8, 0, false)
+                                .verticalAlign(TextWidget.Alignment.CENTER)
+                                .horizontalAlign(TextWidget.Alignment.CENTER);
+                    }
                 } else {
-                    widgets.addTexture(DISTRIBUTION, 64, 0, 32, 16, 0, 32);
-                    widgets.addText(Component.literal("<"+accessor.getPlateau()+">"), 80, 0, 0, false)
-                            .verticalAlign(TextWidget.Alignment.CENTER)
-                            .horizontalAlign(TextWidget.Alignment.CENTER);
+                    v = 32;
                 }
-                widgets.addText(anchorText(accessor.getMinInclusive()), 64, 8, 0, false)
+            } else {
+                v = -1;
+                min = null;
+                max = null;
+            }
+
+            if (v != -1 && min != null && max != null) {
+                widgets.addTexture(DISTRIBUTION, 64, 0, 32, 16, 0, v);
+                widgets.addText(anchorText(min), 64, 8, 0, false)
                         .verticalAlign(TextWidget.Alignment.CENTER)
                         .horizontalAlign(TextWidget.Alignment.END);
-                widgets.addText(anchorText(accessor.getMaxInclusive()), 96, 8, 0, false)
+                widgets.addText(anchorText(max), 96, 8, 0, false)
                         .verticalAlign(TextWidget.Alignment.CENTER)
                         .horizontalAlign(TextWidget.Alignment.START);
             }
