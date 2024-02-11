@@ -22,6 +22,7 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.feature.ScatteredOreFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.TrapezoidHeight;
@@ -110,6 +111,11 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
                 rarityChance = ((RarityFilterAccessor) rarityFilter).getChance();
             }
         }
+
+        if (feature.feature().value().feature() instanceof ScatteredOreFeature) {
+            countMin = countMax = 1; // special handling, only used by ancient debris
+        }
+
         this.countMin = countMin;
         this.countMax = countMax;
         this.rarityChance = rarityChance;
