@@ -227,20 +227,22 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
         if (discardChanceOnAirExposure > 0)
             widgets.addSlot(EmiStack.of(Items.BARRIER).setChance(discardChanceOnAirExposure), 142, 18);
 
+        Component veinFreq;
         if (countMin != -1 && countMax != -1) {
             if (countMin == countMax) {
-                widgets.addText(Component.translatable("emi_ores.veins_per_chunk", countMin), 160, 45, 0, false)
-                        .horizontalAlign(TextWidget.Alignment.END)
-                        .verticalAlign(TextWidget.Alignment.CENTER);
+                veinFreq = Component.translatable("emi_ores.veins_per_chunk", countMin);
             } else {
-                widgets.addText(Component.translatable("emi_ores.veins_per_chunk_range", countMin, countMax), 160, 45, 0, false)
-                        .horizontalAlign(TextWidget.Alignment.END)
-                        .verticalAlign(TextWidget.Alignment.CENTER);
+                veinFreq = Component.translatable("emi_ores.veins_per_chunk_range", countMin, countMax);
             }
         } else if (rarityChance != -1) {
-            widgets.addText(Component.translatable("emi_ores.rarity_chance", rarityChance), 160, 45, 0, false)
+            veinFreq = Component.translatable("emi_ores.rarity_chance", rarityChance);
+        } else {
+            veinFreq = null;
+        }
+        if (veinFreq != null) {
+            widgets.addText(veinFreq, 160, 45, 0, false)
                     .horizontalAlign(TextWidget.Alignment.END)
-                        .verticalAlign(TextWidget.Alignment.CENTER);
+                    .verticalAlign(TextWidget.Alignment.CENTER);
         }
     }
 
