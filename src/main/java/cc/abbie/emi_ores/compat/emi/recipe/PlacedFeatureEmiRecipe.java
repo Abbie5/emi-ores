@@ -225,7 +225,8 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
             widgets.addSlot(biomes, 96, 18);
 
         if (discardChanceOnAirExposure > 0)
-            widgets.addSlot(EmiStack.of(Items.BARRIER).setChance(discardChanceOnAirExposure), 142, 18);
+            widgets.addSlot(EmiStack.of(Items.BARRIER).setChance(discardChanceOnAirExposure), 142, 18)
+                    .appendTooltip(Component.translatable("emi_ores.discard_on_air_chance"));
 
         Component veinFreq;
         if (countMin != -1 && countMax != -1) {

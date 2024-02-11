@@ -3,5 +3,6 @@
 
   "emi_ores.veins_per_chunk": "%s per chunk",
   "emi_ores.veins_per_chunk_range": "%s - %s per chunk",
-  "emi_ores.rarity_chance": "1 in %s chunks"
+  "emi_ores.rarity_chance": "1 in %s chunks",
+  "emi_ores.discard_on_air_chance": "Chance of being skipped when exposed to air"
 }
