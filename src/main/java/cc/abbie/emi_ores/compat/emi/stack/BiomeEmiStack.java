@@ -28,8 +28,18 @@ public class BiomeEmiStack extends EmiStack {
     }
 
     @Override
-    public void render(GuiGraphics draw, int x, int y, float delta, int flags) {
+    public void render(GuiGraphics gui, int x, int y, float delta, int flags) {
+        int secondary;
 
+        int water = biome.getWaterColor();
+        int fog = biome.getFogColor();
+        if (fog != 12638463) {
+            secondary = fog;
+        } else {
+            secondary = water;
+        }
+
+        gui.fillGradient(x, y, x+16, y+16, biome.getFoliageColor() | 0xff000000, secondary | 0xff000000);
     }
 
     @Override
