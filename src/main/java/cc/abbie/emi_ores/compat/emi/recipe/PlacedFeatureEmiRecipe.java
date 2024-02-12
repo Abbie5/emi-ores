@@ -185,19 +185,19 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
                     v = 16;
 
                     // if the min and max are the same type, we can calculate the y-level with the highest frequency
-                    Integer mid;
+                    VerticalAnchor mid;
                     if (min instanceof VerticalAnchor.Absolute minAbs && max instanceof VerticalAnchor.Absolute maxAbs) {
-                        mid = (minAbs.y() + maxAbs.y()) / 2;
+                        mid = VerticalAnchor.absolute((minAbs.y() + maxAbs.y()) / 2);
                     } else if (min instanceof VerticalAnchor.AboveBottom minBot && max instanceof VerticalAnchor.AboveBottom maxBot) {
-                        mid = (minBot.offset() + maxBot.offset()) / 2;
+                        mid = VerticalAnchor.aboveBottom((minBot.offset() + maxBot.offset()) / 2);
                     } else if (min instanceof VerticalAnchor.BelowTop minTop && max instanceof VerticalAnchor.BelowTop maxTop) {
-                        mid = (minTop.offset() + maxTop.offset()) / 2;
+                        mid = VerticalAnchor.belowTop((minTop.offset() + maxTop.offset()) / 2);
                     } else {
                         mid = null;
                     }
 
                     if (mid != null) {
-                        widgets.addText(Component.literal(String.valueOf(mid)), 80, 8, 0, false)
+                        widgets.addText(anchorText(mid), 80, 8, 0, false)
                                 .verticalAlign(TextWidget.Alignment.CENTER)
                                 .horizontalAlign(TextWidget.Alignment.CENTER);
                     }
