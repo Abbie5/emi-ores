@@ -1,6 +1,21 @@
 # EMI Ores
 
-Easily view ore generation information from inside EMI.
+Easily view ore generation information from inside [EMI](https://modrinth.com/mod/emi).
+
+[Modrinth](https://modrinth.com/mod/emi-ores) [CurseForge](https://www.curseforge.com/minecraft/mc-mods/emi-ores)
+
+EMI Ores is a plugin for the recipe viewer EMI that displays information about how ores generate in the world, including:
+
+- Y-level distribution
+- Vein size
+- Vein count per chunk
+- Biome restrictions
+
+The mod is required on both client and server in order to function; if present on only one side it will silently disable itself.
+
+Owing to the fact that this mod gathers its data from data pack configured/placed features, modded ores should display correctly without additional configuration in the vast majority of cases.
+
+I currently consider this mod to be in an **ALPHA** state. It is still in the early stages of development and is subject to change. If you find any bugs or have a suggestion on how the mod should function, please open a ticket on the [issue tracker](https://github.com/Abbie5/emi-ores/issues).
 
 ## Screenshots
 
@@ -10,19 +25,19 @@ Easily view ore generation information from inside EMI.
 
 ## Comparison with existing ore generation recipe viewer plugins
 
-| Feature | EMI Ores | Just Enough Resources | Roughly Enough Resources |
+| Feature | EMI Ores | [Just Enough Resources](https://modrinth.com/mod/just-enough-resources-jer) | [Roughly Enough Resources](https://www.curseforge.com/minecraft/mc-mods/roughly-enough-resources) |
 | --- | --- | --- | --- |
-| Display ore generation information | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Display non-ore world generation information | :x: | :x: | :white_check_mark: |
-| Automatic modded ore support | :white_check_mark: | :x: | :white_check_mark: |
-| Display biome restrictions | :white_check_mark: | :white_check_mark: | :x: |
-| Combine stone and deepslate ores | :white_check_mark: | :white_check_mark: | :x: |
+| Display ore generation information | ✅ | ✅ | ✅ |
+| Display non-ore world generation information | ❌ | ❌ | ✅ |
+| Automatic modded ore support | ✅ | ❌ | ✅ |
+| Display biome restrictions | ✅ | ✅ | ❌ |
+| Combine stone and deepslate ores | ✅ | ✅ | ❌ |
 | Data source | Data pack placed/configured features | Hard-coded | Scanned chunks |
-| Recipe viewer support | EMI | JEI, EMI (via JEI) | REI |
-| Display loot tables | :x:[^1] | :white_check_mark: | :white_check_mark: |
-| Display villager trades | :x:[^2] | :white_check_mark: | :x: |
-| Display enchantments available on items | :o:[^3] | :white_check_mark: | :x: |
+| Recipe viewer support | EMI | [JEI](https://modrinth.com/mod/jei), EMI (via JEI) | [REI](https://modrinth.com/mod/rei) |
+| Display loot tables | ❌[^1] | ✅ | ✅ |
+| Display villager trades | ❌[^2] | ✅ | ❌ |
+| Display enchantments available on items | ⭕[^3] | ✅ | ❌ |
 
 [^1]: See [EMI Loot](https://modrinth.com/mod/emi-loot).
 [^2]: See [EMI Trades](https://modrinth.com/mod/emitrades).
-[^3]: Available in EMI.
+[^3]: Basic functionality available in EMI, also see [EMI Enchanting](https://modrinth.com/mod/emi-enchanting).
