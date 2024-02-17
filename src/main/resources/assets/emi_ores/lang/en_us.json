@@ -1,5 +1,6 @@
 {
   "emi.category.emi_ores.oregen": "Ore Generation",
+  "emi.category.emi_ores.geode": "Geode Generation",
 
   "emi_ores.veins_per_chunk": "%s per chunk",
   "emi_ores.veins_per_chunk_range": "%s - %s per chunk",

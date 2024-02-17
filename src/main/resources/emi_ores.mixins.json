@@ -8,6 +8,7 @@
     "accessor.CountPlacementAccessor",
     "accessor.HeightRangePlacementAccessor",
     "accessor.RarityFilterAccessor",
+    "accessor.SimpleStateProviderAccessor",
     "accessor.TagMatchTestAccessor",
     "accessor.TrapezoidHeightAccessor",
     "accessor.UniformHeightAccessor"

@@ -1,10 +1,8 @@
 package cc.abbie.emi_ores.compat.emi.recipe;
 
-import cc.abbie.emi_ores.EmiOres;
 import cc.abbie.emi_ores.compat.emi.EmiOresRecipeCategories;
 import cc.abbie.emi_ores.compat.emi.stack.BiomeEmiStack;
 import cc.abbie.emi_ores.mixin.accessor.*;
-import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
@@ -37,8 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PlacedFeatureEmiRecipe implements EmiRecipe {
-    private static final ResourceLocation DISTRIBUTION = EmiOres.id("textures/gui/distribution.png");
+public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
 
     private final ResourceLocation id;
     private final List<EmiIngredient> inputs;
@@ -50,7 +47,7 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
     private final int countMax;
     private final int rarityChance;
 
-    public PlacedFeatureEmiRecipe(PlacedFeature feature, ResourceLocation id) {
+    public OreGenEmiRecipe(PlacedFeature feature, ResourceLocation id) {
         this.id = id;
 
         List<EmiIngredient> inputs = new ArrayList<>();
@@ -88,21 +85,7 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
             if (modifier instanceof HeightRangePlacement heightRange) {
                 heightProvider = ((HeightRangePlacementAccessor) heightRange).getHeight();
             } else if (modifier instanceof BiomeFilter) {
-                biomes = Minecraft.getInstance().level.registryAccess()
-                        .registryOrThrow(Registries.BIOME)
-                        .stream()
-                        .filter(biome -> {
-                            var features = biome.getGenerationSettings().features();
-                            for (HolderSet<PlacedFeature> holderSet : features) {
-                                for (Holder<PlacedFeature> holder : holderSet) {
-                                    if (holder.unwrap().map(
-                                            resourceKey -> resourceKey.location().equals(id),
-                                            placedFeature -> placedFeature.equals(feature)
-                                    )) return true;
-                                }
-                            }
-                            return false;
-                        }).toList();
+                biomes = getBiomes(id, feature);
             } else if (modifier instanceof CountPlacement countPlacement) {
                 IntProvider countIntProvider = ((CountPlacementAccessor) countPlacement).getCount();
                 countMin = countIntProvider.getMinValue();
@@ -166,60 +149,7 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
             widgets.addSlot(outputs.get(i), 46, 18 + i * 18).recipeContext(this);
         }
 
-        if (heightProvider != null) {
-            int v;
-            VerticalAnchor min;
-            VerticalAnchor max;
-
-            if (heightProvider instanceof UniformHeight uniform) {
-                v = 0;
-                UniformHeightAccessor accessor = (UniformHeightAccessor) uniform;
-                min = accessor.getMinInclusive();
-                max = accessor.getMaxInclusive();
-            } else if (heightProvider instanceof TrapezoidHeight trapezoid) {
-                TrapezoidHeightAccessor accessor = (TrapezoidHeightAccessor) trapezoid;
-                min = accessor.getMinInclusive();
-                max = accessor.getMaxInclusive();
-
-                if (accessor.getPlateau() == 0) {
-                    v = 16;
-
-                    // if the min and max are the same type, we can calculate the y-level with the highest frequency
-                    VerticalAnchor mid;
-                    if (min instanceof VerticalAnchor.Absolute minAbs && max instanceof VerticalAnchor.Absolute maxAbs) {
-                        mid = VerticalAnchor.absolute((minAbs.y() + maxAbs.y()) / 2);
-                    } else if (min instanceof VerticalAnchor.AboveBottom minBot && max instanceof VerticalAnchor.AboveBottom maxBot) {
-                        mid = VerticalAnchor.aboveBottom((minBot.offset() + maxBot.offset()) / 2);
-                    } else if (min instanceof VerticalAnchor.BelowTop minTop && max instanceof VerticalAnchor.BelowTop maxTop) {
-                        mid = VerticalAnchor.belowTop((minTop.offset() + maxTop.offset()) / 2);
-                    } else {
-                        mid = null;
-                    }
-
-                    if (mid != null) {
-                        widgets.addText(anchorText(mid), 80, 8, 0, false)
-                                .verticalAlign(TextWidget.Alignment.CENTER)
-                                .horizontalAlign(TextWidget.Alignment.CENTER);
-                    }
-                } else {
-                    v = 32;
-                }
-            } else {
-                v = -1;
-                min = null;
-                max = null;
-            }
-
-            if (v != -1 && min != null && max != null) {
-                widgets.addTexture(DISTRIBUTION, 64, 0, 32, 16, 0, v);
-                widgets.addText(anchorText(min), 64, 8, 0, false)
-                        .verticalAlign(TextWidget.Alignment.CENTER)
-                        .horizontalAlign(TextWidget.Alignment.END);
-                widgets.addText(anchorText(max), 96, 8, 0, false)
-                        .verticalAlign(TextWidget.Alignment.CENTER)
-                        .horizontalAlign(TextWidget.Alignment.START);
-            }
-        }
+        addDistributionGraph(widgets, 64, 0, heightProvider);
 
         if (!biomes.isEmpty())
             widgets.addSlot(biomes, 96, 18);
@@ -228,18 +158,7 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
             widgets.addSlot(EmiStack.of(Items.BARRIER).setChance(discardChanceOnAirExposure), 142, 18)
                     .appendTooltip(Component.translatable("emi_ores.discard_on_air_chance"));
 
-        Component veinFreq;
-        if (countMin != -1 && countMax != -1) {
-            if (countMin == countMax) {
-                veinFreq = Component.translatable("emi_ores.veins_per_chunk", countMin);
-            } else {
-                veinFreq = Component.translatable("emi_ores.veins_per_chunk_range", countMin, countMax);
-            }
-        } else if (rarityChance != -1) {
-            veinFreq = Component.translatable("emi_ores.rarity_chance", rarityChance);
-        } else {
-            veinFreq = null;
-        }
+        Component veinFreq = getVeinFreqComponent(countMin, countMax, rarityChance);
         if (veinFreq != null) {
             widgets.addText(veinFreq, 160, 45, 0, false)
                     .horizontalAlign(TextWidget.Alignment.END)
@@ -247,31 +166,4 @@ public class PlacedFeatureEmiRecipe implements EmiRecipe {
         }
     }
 
-    private static Component anchorText(VerticalAnchor anchor) {
-        String s;
-        if (anchor instanceof VerticalAnchor.Absolute absolute) {
-            s = String.valueOf(absolute.y());
-        } else if (anchor instanceof VerticalAnchor.AboveBottom aboveBottom) {
-            int offset = aboveBottom.offset();
-            if (offset == 0) {
-                s = "bot";
-            } else if (offset > 0) {
-                s = "bot+" + offset;
-            } else {
-                s = "bot" + offset;
-            }
-        } else if (anchor instanceof VerticalAnchor.BelowTop belowTop) {
-            int offset = -1 * belowTop.offset();
-            if (offset == 0) {
-                s = "top";
-            } else if (offset > 0) {
-                s = "top+" + offset;
-            } else {
-                s = "top" + offset;
-            }
-        } else {
-            throw new RuntimeException();
-        }
-        return Component.literal(s);
-    }
 }

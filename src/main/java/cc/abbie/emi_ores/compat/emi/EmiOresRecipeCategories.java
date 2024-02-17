@@ -7,4 +7,5 @@ import net.minecraft.world.level.block.Blocks;
 
 public class EmiOresRecipeCategories {
     public static final EmiRecipeCategory OREGEN = new EmiRecipeCategory(EmiOres.id("oregen"), EmiStack.of(Blocks.DEEPSLATE_DIAMOND_ORE));
+    public static final EmiRecipeCategory GEODE = new EmiRecipeCategory(EmiOres.id("geode"), EmiStack.of(Blocks.BUDDING_AMETHYST));
 }
