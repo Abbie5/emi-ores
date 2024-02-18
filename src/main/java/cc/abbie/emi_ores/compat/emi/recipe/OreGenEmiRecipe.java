@@ -27,6 +27,7 @@ import net.minecraft.world.level.levelgen.heightproviders.TrapezoidHeight;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockStateMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,6 +68,9 @@ public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
             } else if (target instanceof BlockMatchTest blockMatchTest) {
                 var block = ((BlockMatchTestAccessor) blockMatchTest).getBlock();
                 inputs.add(EmiStack.of(block));
+            } else if (target instanceof BlockStateMatchTest blockStateMatchTest) {
+                var state = ((BlockStateMatchTestAccessor) blockStateMatchTest).getBlockState();
+                inputs.add(EmiStack.of(state.getBlock()));
             } else {
                 inputs.add(EmiStack.EMPTY);
             }
