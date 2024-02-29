@@ -8,13 +8,15 @@
     "accessor.BlockStateMatchTestAccessor",
     "accessor.CountPlacementAccessor",
     "accessor.HeightRangePlacementAccessor",
+    "accessor.NoiseProviderAccessor",
     "accessor.RandomBlockMatchTestAccessor",
     "accessor.RandomBlockStateMatchTestAccessor",
     "accessor.RarityFilterAccessor",
     "accessor.SimpleStateProviderAccessor",
     "accessor.TagMatchTestAccessor",
     "accessor.TrapezoidHeightAccessor",
-    "accessor.UniformHeightAccessor"
+    "accessor.UniformHeightAccessor",
+    "accessor.WeightedStateProviderAccessor"
   ],
   "client": [
   ],

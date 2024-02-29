@@ -2,9 +2,7 @@ package cc.abbie.emi_ores.compat.emi.recipe;
 
 import cc.abbie.emi_ores.compat.emi.EmiOresRecipeCategories;
 import cc.abbie.emi_ores.compat.emi.stack.BiomeEmiStack;
-import cc.abbie.emi_ores.mixin.accessor.HeightRangePlacementAccessor;
-import cc.abbie.emi_ores.mixin.accessor.RarityFilterAccessor;
-import cc.abbie.emi_ores.mixin.accessor.SimpleStateProviderAccessor;
+import cc.abbie.emi_ores.mixin.accessor.*;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
@@ -13,15 +11,21 @@ import dev.emi.emi.api.widget.TextWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GeodeBlockSettings;
+import net.minecraft.world.level.levelgen.GeodeLayerSettings;
 import net.minecraft.world.level.levelgen.feature.configurations.GeodeConfiguration;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
+import net.minecraft.world.level.levelgen.feature.stateproviders.NoiseProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
+import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.placement.*;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,10 +34,11 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
     private final HeightProvider heightProvider;
     private final int rarityChance;
     private final EmiIngredient biomes;
-    private final EmiStack alternateInner;
-    private final EmiStack inner;
-    private final EmiStack middle;
-    private final EmiStack outer;
+    private final EmiIngredient alternateInner;
+    private final EmiIngredient inner;
+    private final EmiIngredient middle;
+    private final EmiIngredient outer;
+    private final EmiIngredient filling;
     private final EmiIngredient innerPlacements;
     private final ResourceLocation id;
 
@@ -57,34 +62,52 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
 
         GeodeConfiguration config = (GeodeConfiguration) feature.feature().value().config();
 
-        GeodeBlockSettings geodeBlockSettings = config.geodeBlockSettings;
+        GeodeBlockSettings blockSettings = config.geodeBlockSettings;
+        GeodeLayerSettings layerSettings = config.geodeLayerSettings;
 
-        if (geodeBlockSettings.alternateInnerLayerProvider instanceof SimpleStateProvider simple) {
-            this.alternateInner = EmiStack.of(((SimpleStateProviderAccessor) simple).getState().getBlock()).setChance((float) config.useAlternateLayer0Chance);
-        } else {
-            this.alternateInner = EmiStack.EMPTY;
+        this.alternateInner = ingredientForStateProvider(blockSettings.alternateInnerLayerProvider)
+                .setChance((float) config.useAlternateLayer0Chance);
+
+        this.filling = ingredientForStateProvider(blockSettings.fillingProvider)
+                .setAmount((long) Math.ceil(layerSettings.filling));
+
+        this.inner = ingredientForStateProvider(blockSettings.innerLayerProvider)
+                .setAmount((long) Math.ceil(layerSettings.innerLayer - layerSettings.filling));
+
+        this.middle = ingredientForStateProvider(blockSettings.middleLayerProvider)
+                .setAmount((long) Math.ceil(layerSettings.middleLayer - layerSettings.innerLayer));
+
+        this.outer = ingredientForStateProvider(blockSettings.outerLayerProvider)
+                .setAmount((long) Math.ceil(layerSettings.outerLayer - layerSettings.middleLayer));
+
+        this.innerPlacements = EmiIngredient.of(blockSettings.innerPlacements.stream()
+                .map(BlockState::getBlock)
+                .map(EmiStack::of)
+                .collect(Collectors.toList()));
+    }
+
+    private static EmiIngredient ingredientForStateProvider(BlockStateProvider provider) {
+        if (provider instanceof SimpleStateProvider simple) {
+            return EmiStack.of(((SimpleStateProviderAccessor) simple).getState().getBlock());
+        } else if (provider instanceof WeightedStateProvider weighted) {
+            // ignore the weights
+            return EmiIngredient.of(((WeightedStateProviderAccessor) weighted).getWeightedList()
+                    .unwrap()
+                    .stream()
+                    .map(WeightedEntry.Wrapper::getData)
+                    .map(BlockState::getBlock)
+                    .map(EmiStack::of)
+                    .toList());
+        } else if (provider instanceof NoiseProvider noise) {
+            return EmiIngredient.of(((NoiseProviderAccessor) noise).getStates()
+                    .stream()
+                    .map(BlockState::getBlock)
+                    .distinct()
+                    .map(EmiStack::of)
+                    .toList());
         }
 
-        if (geodeBlockSettings.innerLayerProvider instanceof SimpleStateProvider simple) {
-            this.inner = EmiStack.of(((SimpleStateProviderAccessor) simple).getState().getBlock());
-        } else {
-            this.inner = EmiStack.EMPTY;
-        }
-
-        if (geodeBlockSettings.middleLayerProvider instanceof SimpleStateProvider simple) {
-            this.middle = EmiStack.of(((SimpleStateProviderAccessor) simple).getState().getBlock());
-        } else {
-            this.middle = EmiStack.EMPTY;
-        }
-
-        if (geodeBlockSettings.outerLayerProvider instanceof SimpleStateProvider simple) {
-            this.outer = EmiStack.of(((SimpleStateProviderAccessor) simple).getState().getBlock());
-        } else {
-            this.outer = EmiStack.EMPTY;
-        }
-
-        this.innerPlacements = EmiIngredient.of(geodeBlockSettings.innerPlacements.stream().map(BlockState::getBlock).map(EmiStack::of).collect(Collectors.toList()));
-
+        return EmiStack.EMPTY;
     }
 
     @Override
@@ -104,10 +127,10 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
 
     @Override
     public List<EmiStack> getOutputs() {
-        return Stream.concat(
-                innerPlacements.getEmiStacks().stream(),
-                Stream.of(alternateInner, inner, middle, outer)
-        ).toList();
+        return Stream.of(innerPlacements, filling, alternateInner, inner, middle, outer)
+                .map(EmiIngredient::getEmiStacks)
+                .flatMap(Collection::stream)
+                .toList();
     }
 
     @Override
@@ -117,7 +140,7 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
 
     @Override
     public int getDisplayHeight() {
-        return 60;
+        return 90;
     }
 
     @Override
@@ -127,16 +150,18 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        widgets.addSlot(inner, 0, 18)
+        widgets.addSlot(filling, 0, 18)
                 .recipeContext(this);
-        widgets.addTexture(EmiTexture.EMPTY_ARROW, 20, 18);
-        widgets.addSlot(alternateInner, 46, 18)
+        widgets.addSlot(innerPlacements, 46, 18)
                 .recipeContext(this);
-        widgets.addSlot(outer, 0, 36)
+        widgets.addSlot(inner, 0, 36)
                 .recipeContext(this);
-        widgets.addSlot(middle, 18, 36)
+        widgets.addTexture(EmiTexture.EMPTY_ARROW, 20, 36);
+        widgets.addSlot(alternateInner, 46, 36)
                 .recipeContext(this);
-        widgets.addSlot(innerPlacements, 46, 36)
+        widgets.addSlot(middle, 0, 54)
+                .recipeContext(this);
+        widgets.addSlot(outer, 0, 72)
                 .recipeContext(this);
 
         addDistributionGraph(widgets, 64, 0, heightProvider);
