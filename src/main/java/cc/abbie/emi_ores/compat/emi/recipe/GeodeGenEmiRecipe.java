@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
     private final HeightProvider heightProvider;
@@ -103,7 +104,10 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
 
     @Override
     public List<EmiStack> getOutputs() {
-        return List.of(alternateInner, inner, middle, outer);
+        return Stream.concat(
+                innerPlacements.getEmiStacks().stream(),
+                Stream.of(alternateInner, inner, middle, outer)
+        ).toList();
     }
 
     @Override
@@ -128,11 +132,11 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
         widgets.addTexture(EmiTexture.EMPTY_ARROW, 20, 18);
         widgets.addSlot(alternateInner, 46, 18)
                 .recipeContext(this);
+        widgets.addSlot(outer, 0, 36)
+                .recipeContext(this);
         widgets.addSlot(middle, 18, 36)
                 .recipeContext(this);
-        widgets.addSlot(outer, 36, 36)
-                .recipeContext(this);
-        widgets.addSlot(innerPlacements, 0, 36)
+        widgets.addSlot(innerPlacements, 46, 36)
                 .recipeContext(this);
 
         addDistributionGraph(widgets, 64, 0, heightProvider);
