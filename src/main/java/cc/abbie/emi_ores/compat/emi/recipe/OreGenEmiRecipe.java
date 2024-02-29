@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
 
@@ -124,7 +125,7 @@ public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return inputs;
+        return Stream.concat(inputs.stream(), Stream.of(biomes)).toList();
     }
 
     @Override

@@ -123,7 +123,7 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return List.of();
+        return List.of(biomes);
     }
 
     @Override
