@@ -83,7 +83,8 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
         this.innerPlacements = EmiIngredient.of(blockSettings.innerPlacements.stream()
                 .map(BlockState::getBlock)
                 .map(EmiStack::of)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList())
+        ).setChance((float) config.usePotentialPlacementsChance);
     }
 
     private static EmiIngredient ingredientForStateProvider(BlockStateProvider provider) {
