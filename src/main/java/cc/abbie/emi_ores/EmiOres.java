@@ -10,10 +10,15 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.GeodeConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
+import net.minecraft.world.level.levelgen.placement.EnvironmentScanPlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class EmiOres implements ModInitializer {
     public static final String MODID = "emi_ores";
@@ -27,8 +32,16 @@ public class EmiOres implements ModInitializer {
                 PlacedFeature pf = entry.getValue();
                 ConfiguredFeature<?, ?> cf = pf.feature().value();
                 FeatureConfiguration fc = cf.config();
-                if (fc instanceof OreConfiguration || fc instanceof GeodeConfiguration)
-                    featureMap.put(entry.getKey().location(), pf);
+                if (fc instanceof OreConfiguration || fc instanceof GeodeConfiguration) {
+                    // remove problematic placement modifiers
+                    List<PlacementModifier> newModifiers = pf.placement()
+                            .stream()
+                            .filter(Predicate.not(BlockPredicateFilter.class::isInstance))
+                            .filter(Predicate.not(EnvironmentScanPlacement.class::isInstance))
+                            .toList();
+
+                    featureMap.put(entry.getKey().location(), new PlacedFeature(pf.feature(), newModifiers));
+                }
             });
             ServerPlayNetworking.send(player, new S2CSendFeaturesPacket(featureMap));
         });
