@@ -20,9 +20,7 @@ import net.minecraft.world.level.levelgen.feature.ScatteredOreFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.placement.*;
-import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
-import net.minecraft.world.level.levelgen.structure.templatesystem.BlockStateMatchTest;
-import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -65,6 +63,16 @@ public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
             } else if (target instanceof BlockStateMatchTest blockStateMatchTest) {
                 var state = ((BlockStateMatchTestAccessor) blockStateMatchTest).getBlockState();
                 inputs.add(EmiStack.of(state.getBlock()));
+            } else if (target instanceof RandomBlockMatchTest randomBlockMatchTest) {
+                RandomBlockMatchTestAccessor accessor = (RandomBlockMatchTestAccessor) randomBlockMatchTest;
+                var block = accessor.getBlock();
+                var probability = accessor.getProbability();
+                inputs.add(EmiStack.of(block).setChance(probability));
+            } else if (target instanceof RandomBlockStateMatchTest randomBlockStateMatchTest) {
+                RandomBlockStateMatchTestAccessor accessor = (RandomBlockStateMatchTestAccessor) randomBlockStateMatchTest;
+                var block = accessor.getBlockState().getBlock();
+                var probability = accessor.getProbability();
+                inputs.add(EmiStack.of(block).setChance(probability));
             } else {
                 inputs.add(EmiStack.EMPTY);
             }

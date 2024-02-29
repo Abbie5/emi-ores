@@ -8,6 +8,8 @@
     "accessor.BlockStateMatchTestAccessor",
     "accessor.CountPlacementAccessor",
     "accessor.HeightRangePlacementAccessor",
+    "accessor.RandomBlockMatchTestAccessor",
+    "accessor.RandomBlockStateMatchTestAccessor",
     "accessor.RarityFilterAccessor",
     "accessor.SimpleStateProviderAccessor",
     "accessor.TagMatchTestAccessor",
