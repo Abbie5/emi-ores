@@ -9,15 +9,11 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.GeodeConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
-import net.minecraft.world.level.levelgen.placement.EnvironmentScanPlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 public class FeaturesSender {
     public static void onSyncDataPackContents(ServerPlayer player, boolean joined) {
@@ -33,13 +29,19 @@ public class FeaturesSender {
                 // remove problematic placement modifiers
                 List<PlacementModifier> newModifiers = pf.placement()
                         .stream()
-                        .filter(Predicate.not(BlockPredicateFilter.class::isInstance))
-                        .filter(Predicate.not(EnvironmentScanPlacement.class::isInstance))
+                        .filter(FeaturesSender::isSupported)
                         .toList();
 
                 featureMap.put(entry.getKey().location(), new PlacedFeature(pf.feature(), newModifiers));
             }
         });
         ServerPlayNetworking.send(player, new S2CSendFeaturesPacket(featureMap));
+    }
+
+    private static boolean isSupported(PlacementModifier modifier) {
+        return modifier instanceof HeightRangePlacement
+                || modifier instanceof BiomeFilter
+                || modifier instanceof CountPlacement
+                || modifier instanceof RarityFilter;
     }
 }
