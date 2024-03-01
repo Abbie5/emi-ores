@@ -26,6 +26,8 @@ public class EmiOres implements ModInitializer {
     @Override
     public void onInitialize() {
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
+            if (!ServerPlayNetworking.canSend(player, S2CSendFeaturesPacket.TYPE)) return;
+
             Map<ResourceLocation, PlacedFeature> featureMap = new HashMap<>();
             player.server.registryAccess().registryOrThrow(Registries.PLACED_FEATURE).entrySet().forEach(entry -> {
                 // we only care about ore features for now
