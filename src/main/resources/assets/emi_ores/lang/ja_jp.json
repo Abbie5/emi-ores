@@ -1,0 +1,9 @@
+{
+  "emi.category.emi_ores.oregen": "鉱石の生成",
+  "emi.category.emi_ores.geode": "ジオードの生成",
+
+  "emi_ores.veins_per_chunk": "1チャンクに%s回",
+  "emi_ores.veins_per_chunk_range": "1チャンクに%s-%s回",
+  "emi_ores.rarity_chance": "%sチャンクに1回",
+  "emi_ores.discard_on_air_chance": "露出した鉱石が生成されない確率"
+}
