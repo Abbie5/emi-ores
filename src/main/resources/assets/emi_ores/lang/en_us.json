@@ -10,10 +10,10 @@
   "emi_ores.distribution.triangle": "Triangular distribution",
   "emi_ores.distribution.trapezoid": "Trapezoid distribution",
   "emi_ores.distribution.range": "From Y = %s to %s",
-  "emi_ores.distribution.anchor.bottom": "Bottom",
+  "emi_ores.distribution.anchor.bottom": "bottom of the world",
   "emi_ores.distribution.anchor.above_bottom": "%s above bottom",
   "emi_ores.distribution.anchor.below_bottom": "%s below bottom",
-  "emi_ores.distribution.anchor.top": "Top",
+  "emi_ores.distribution.anchor.top": "top of the world",
   "emi_ores.distribution.anchor.above_top": "%s above top",
   "emi_ores.distribution.anchor.below_top": "%s below top",
   "emi_ores.distribution.middle": "Most common at Y = %s"

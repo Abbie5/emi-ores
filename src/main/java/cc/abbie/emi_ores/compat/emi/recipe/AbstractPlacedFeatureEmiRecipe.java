@@ -6,11 +6,13 @@ import cc.abbie.emi_ores.mixin.accessor.UniformHeightAccessor;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.widget.TextWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -55,6 +57,10 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
     }
 
     protected static Component anchorTextLong(VerticalAnchor anchor) {
+        return anchorTextLongInner(anchor).withStyle(ChatFormatting.WHITE);
+    }
+
+    private static MutableComponent anchorTextLongInner(VerticalAnchor anchor) {
         if (anchor instanceof VerticalAnchor.Absolute absolute) {
             return Component.literal(String.valueOf(absolute.y()));
         } else if (anchor instanceof VerticalAnchor.AboveBottom aboveBottom) {
@@ -111,8 +117,8 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
                 min = accessor.getMinInclusive();
                 max = accessor.getMaxInclusive();
 
-                tooltip.add(Component.translatable("emi_ores.distribution.uniform"));
-                tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)));
+                tooltip.add(Component.translatable("emi_ores.distribution.uniform").withStyle(ChatFormatting.BLUE));
+                tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)).withStyle(ChatFormatting.GRAY));
             } else if (heightProvider instanceof TrapezoidHeight trapezoid) {
                 TrapezoidHeightAccessor accessor = (TrapezoidHeightAccessor) trapezoid;
                 min = accessor.getMinInclusive();
@@ -139,14 +145,14 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
                                 .horizontalAlign(TextWidget.Alignment.CENTER);
                     }
 
-                    tooltip.add(Component.translatable("emi_ores.distribution.triangle"));
-                    tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)));
-                    tooltip.add(Component.translatable("emi_ores.distribution.middle", anchorTextLong(mid)));
+                    tooltip.add(Component.translatable("emi_ores.distribution.triangle").withStyle(ChatFormatting.GREEN));
+                    tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)).withStyle(ChatFormatting.GRAY));
+                    tooltip.add(Component.translatable("emi_ores.distribution.middle", anchorTextLong(mid)).withStyle(ChatFormatting.GRAY));
                 } else {
                     v = 32;
 
-                    tooltip.add(Component.translatable("emi_ores.distribution.trapezoid"));
-                    tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)));
+                    tooltip.add(Component.translatable("emi_ores.distribution.trapezoid").withStyle(ChatFormatting.RED));
+                    tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)).withStyle(ChatFormatting.GRAY));
                 }
             } else {
                 v = -1;
