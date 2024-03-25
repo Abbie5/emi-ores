@@ -19,6 +19,7 @@ import net.minecraft.world.level.levelgen.heightproviders.TrapezoidHeight;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
@@ -53,6 +54,32 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
         return Component.literal(s);
     }
 
+    protected static Component anchorTextLong(VerticalAnchor anchor) {
+        if (anchor instanceof VerticalAnchor.Absolute absolute) {
+            return Component.literal(String.valueOf(absolute.y()));
+        } else if (anchor instanceof VerticalAnchor.AboveBottom aboveBottom) {
+            int offset = aboveBottom.offset();
+            if (offset == 0) {
+                return Component.translatable("emi_ores.distribution.anchor.bottom");
+            } else if (offset > 0) {
+                return Component.translatable("emi_ores.distribution.anchor.above_bottom", offset);
+            } else {
+                return Component.translatable("emi_ores.distribution.anchor.below_bottom", -offset);
+            }
+        } else if (anchor instanceof VerticalAnchor.BelowTop belowTop) {
+            int offset = -1 * belowTop.offset();
+            if (offset == 0) {
+                return Component.translatable("emi_ores.distribution.anchor.top");
+            } else if (offset > 0) {
+                return Component.translatable("emi_ores.distribution.anchor.above_top", offset);
+            } else {
+                return Component.translatable("emi_ores.distribution.anchor.below_top", -offset);
+            }
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
     protected static List<Biome> getBiomes(ResourceLocation id, PlacedFeature feature) {
         return Minecraft.getInstance().level.registryAccess()
                 .registryOrThrow(Registries.BIOME)
@@ -76,12 +103,16 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
             int v;
             VerticalAnchor min;
             VerticalAnchor max;
+            List<Component> tooltip = new ArrayList<>();
 
             if (heightProvider instanceof UniformHeight uniform) {
                 v = 0;
                 UniformHeightAccessor accessor = (UniformHeightAccessor) uniform;
                 min = accessor.getMinInclusive();
                 max = accessor.getMaxInclusive();
+
+                tooltip.add(Component.translatable("emi_ores.distribution.uniform"));
+                tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)));
             } else if (heightProvider instanceof TrapezoidHeight trapezoid) {
                 TrapezoidHeightAccessor accessor = (TrapezoidHeightAccessor) trapezoid;
                 min = accessor.getMinInclusive();
@@ -107,8 +138,15 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
                                 .verticalAlign(TextWidget.Alignment.CENTER)
                                 .horizontalAlign(TextWidget.Alignment.CENTER);
                     }
+
+                    tooltip.add(Component.translatable("emi_ores.distribution.triangle"));
+                    tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)));
+                    tooltip.add(Component.translatable("emi_ores.distribution.middle", anchorTextLong(mid)));
                 } else {
                     v = 32;
+
+                    tooltip.add(Component.translatable("emi_ores.distribution.trapezoid"));
+                    tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)));
                 }
             } else {
                 v = -1;
@@ -117,7 +155,8 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
             }
 
             if (v != -1 && min != null && max != null) {
-                widgets.addTexture(DISTRIBUTION, x, y, 32, 16, 0, v);
+                widgets.addTexture(DISTRIBUTION, x, y, 32, 16, 0, v)
+                        .tooltipText(tooltip);
                 widgets.addText(anchorText(min), x, y+8, 0, false)
                         .verticalAlign(TextWidget.Alignment.CENTER)
                         .horizontalAlign(TextWidget.Alignment.END);
