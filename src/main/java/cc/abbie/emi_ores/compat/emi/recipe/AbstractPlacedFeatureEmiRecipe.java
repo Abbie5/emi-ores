@@ -42,7 +42,7 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
                 s = "bot" + offset;
             }
         } else if (anchor instanceof VerticalAnchor.BelowTop belowTop) {
-            int offset = -1 * belowTop.offset();
+            int offset = -belowTop.offset();
             if (offset == 0) {
                 s = "top";
             } else if (offset > 0) {
@@ -73,7 +73,7 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
                 return Component.translatable("emi_ores.distribution.anchor.below_bottom", -offset);
             }
         } else if (anchor instanceof VerticalAnchor.BelowTop belowTop) {
-            int offset = -1 * belowTop.offset();
+            int offset = -belowTop.offset();
             if (offset == 0) {
                 return Component.translatable("emi_ores.distribution.anchor.top");
             } else if (offset > 0) {
@@ -105,72 +105,79 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
     }
 
     protected static void addDistributionGraph(WidgetHolder widgets, int x, int y, HeightProvider heightProvider) {
-        if (heightProvider != null) {
-            int v;
-            VerticalAnchor min;
-            VerticalAnchor max;
-            List<Component> tooltip = new ArrayList<>();
+        if (heightProvider == null) return;
 
-            if (heightProvider instanceof UniformHeight uniform) {
-                v = 0;
-                UniformHeightAccessor accessor = (UniformHeightAccessor) uniform;
-                min = accessor.getMinInclusive();
-                max = accessor.getMaxInclusive();
+        HeightProviderType type;
+        VerticalAnchor min, max, midLow, midHigh;
 
-                tooltip.add(Component.translatable("emi_ores.distribution.uniform").withStyle(ChatFormatting.BLUE));
-                tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)).withStyle(ChatFormatting.GRAY));
-            } else if (heightProvider instanceof TrapezoidHeight trapezoid) {
-                TrapezoidHeightAccessor accessor = (TrapezoidHeightAccessor) trapezoid;
-                min = accessor.getMinInclusive();
-                max = accessor.getMaxInclusive();
+        if (heightProvider instanceof UniformHeight uniform) {
+            type = HeightProviderType.UNIFORM;
+            UniformHeightAccessor accessor = (UniformHeightAccessor) uniform;
+            min = accessor.getMinInclusive();
+            max = accessor.getMaxInclusive();
+            midLow = midHigh = null;
+        } else if (heightProvider instanceof TrapezoidHeight trapezoid) {
+            TrapezoidHeightAccessor accessor = (TrapezoidHeightAccessor) trapezoid;
+            min = accessor.getMinInclusive();
+            max = accessor.getMaxInclusive();
 
-                if (accessor.getPlateau() == 0) {
-                    v = 16;
+            int plateau = accessor.getPlateau();
 
-                    // if the min and max are the same type, we can calculate the y-level with the highest frequency
-                    VerticalAnchor mid;
-                    if (min instanceof VerticalAnchor.Absolute minAbs && max instanceof VerticalAnchor.Absolute maxAbs) {
-                        mid = VerticalAnchor.absolute((minAbs.y() + maxAbs.y()) / 2);
-                    } else if (min instanceof VerticalAnchor.AboveBottom minBot && max instanceof VerticalAnchor.AboveBottom maxBot) {
-                        mid = VerticalAnchor.aboveBottom((minBot.offset() + maxBot.offset()) / 2);
-                    } else if (min instanceof VerticalAnchor.BelowTop minTop && max instanceof VerticalAnchor.BelowTop maxTop) {
-                        mid = VerticalAnchor.belowTop((minTop.offset() + maxTop.offset()) / 2);
-                    } else {
-                        mid = null;
-                    }
+            // if the min and max are the same type, we can calculate the y-level with the highest frequency
+            if (min instanceof VerticalAnchor.Absolute minAbs && max instanceof VerticalAnchor.Absolute maxAbs) {
+                midLow = VerticalAnchor.absolute((minAbs.y() + maxAbs.y() - plateau) / 2);
+                midHigh = VerticalAnchor.absolute((minAbs.y() + maxAbs.y() + plateau) / 2);
+            } else if (min instanceof VerticalAnchor.AboveBottom minBot && max instanceof VerticalAnchor.AboveBottom maxBot) {
+                midLow = VerticalAnchor.aboveBottom((minBot.offset() + maxBot.offset() - plateau) / 2);
+                midHigh = VerticalAnchor.aboveBottom((minBot.offset() + maxBot.offset() + plateau) / 2);
+            } else if (min instanceof VerticalAnchor.BelowTop minTop && max instanceof VerticalAnchor.BelowTop maxTop) {
+                midLow = VerticalAnchor.belowTop((minTop.offset() + maxTop.offset() - plateau) / 2);
+                midHigh = VerticalAnchor.belowTop((minTop.offset() + maxTop.offset() + plateau) / 2);
+            } else {
+                midLow = midHigh = null;
+            }
 
-                    if (mid != null) {
-                        widgets.addText(anchorText(mid), 80, 8, 0, false)
-                                .verticalAlign(TextWidget.Alignment.CENTER)
-                                .horizontalAlign(TextWidget.Alignment.CENTER);
-                    }
+            if (plateau == 0) {
+                type = HeightProviderType.TRIANGULAR;
 
-                    tooltip.add(Component.translatable("emi_ores.distribution.triangle").withStyle(ChatFormatting.GREEN));
-                    tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)).withStyle(ChatFormatting.GRAY));
-                    tooltip.add(Component.translatable("emi_ores.distribution.middle", anchorTextLong(mid)).withStyle(ChatFormatting.GRAY));
-                } else {
-                    v = 32;
-
-                    tooltip.add(Component.translatable("emi_ores.distribution.trapezoid").withStyle(ChatFormatting.RED));
-                    tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)).withStyle(ChatFormatting.GRAY));
+                if (midLow != null) {
+                    widgets.addText(anchorText(midLow), 80, 8, 0, false)
+                            .verticalAlign(TextWidget.Alignment.CENTER)
+                            .horizontalAlign(TextWidget.Alignment.CENTER);
                 }
             } else {
-                v = -1;
-                min = null;
-                max = null;
+                type = HeightProviderType.TRAPEZOID;
             }
+        } else {
+            type = null;
+            min = max = midLow = midHigh = null;
+        }
 
-            if (v != -1 && min != null && max != null) {
-                widgets.addTexture(DISTRIBUTION, x, y, 32, 16, 0, v)
-                        .tooltipText(tooltip);
-                widgets.addText(anchorText(min), x, y+8, 0, false)
-                        .verticalAlign(TextWidget.Alignment.CENTER)
-                        .horizontalAlign(TextWidget.Alignment.END);
-                widgets.addText(anchorText(max), x+32, y+8, 0, false)
-                        .verticalAlign(TextWidget.Alignment.CENTER)
-                        .horizontalAlign(TextWidget.Alignment.START);
+        if (type != null && min != null && max != null) {
+            widgets.addTexture(DISTRIBUTION, x, y, 32, 16, 0, type.v)
+                    .tooltipText(getDistributionGraphTooltip(type, min, max, midLow, midHigh));
+            widgets.addText(anchorText(min), x, y+8, 0, false)
+                    .verticalAlign(TextWidget.Alignment.CENTER)
+                    .horizontalAlign(TextWidget.Alignment.END);
+            widgets.addText(anchorText(max), x+32, y+8, 0, false)
+                    .verticalAlign(TextWidget.Alignment.CENTER)
+                    .horizontalAlign(TextWidget.Alignment.START);
+        }
+    }
+
+    protected static List<Component> getDistributionGraphTooltip(HeightProviderType type, VerticalAnchor min, VerticalAnchor max, VerticalAnchor midLow, VerticalAnchor midHigh) {
+        List<Component> tooltip = new ArrayList<>();
+
+        tooltip.add(type.name);
+        tooltip.add(Component.translatable("emi_ores.distribution.range", anchorTextLong(min), anchorTextLong(max)).withStyle(ChatFormatting.GRAY));
+        if (midLow != null && midHigh != null) {
+            if (midLow.equals(midHigh)) {
+                tooltip.add(Component.translatable("emi_ores.distribution.middle", anchorTextLong(midLow)).withStyle(ChatFormatting.GRAY));
+            } else {
+                tooltip.add(Component.translatable("emi_ores.distribution.middle_range", anchorTextLong(midLow), anchorTextLong(midHigh)).withStyle(ChatFormatting.GRAY));
             }
         }
+        return tooltip;
     }
 
     protected static Component getVeinFreqComponent(int countMin, int countMax, int rarityChance) {
@@ -187,5 +194,19 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
             veinFreq = null;
         }
         return veinFreq;
+    }
+
+    protected enum HeightProviderType {
+        UNIFORM(0, Component.translatable("emi_ores.distribution.uniform").withStyle(ChatFormatting.BLUE)),
+        TRIANGULAR(16, Component.translatable("emi_ores.distribution.triangle").withStyle(ChatFormatting.GREEN)),
+        TRAPEZOID(32, Component.translatable("emi_ores.distribution.trapezoid").withStyle(ChatFormatting.RED));
+
+        public final int v;
+        public final Component name;
+
+        HeightProviderType(int v, Component name) {
+            this.v = v;
+            this.name = name;
+        }
     }
 }

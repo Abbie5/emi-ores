@@ -16,5 +16,6 @@
   "emi_ores.distribution.anchor.top": "top of the world",
   "emi_ores.distribution.anchor.above_top": "%s above top",
   "emi_ores.distribution.anchor.below_top": "%s below top",
-  "emi_ores.distribution.middle": "Most common at Y = %s"
+  "emi_ores.distribution.middle": "Most common at Y = %s",
+  "emi_ores.distribution.middle_range": "Most common from Y = %s to %s"
 }
