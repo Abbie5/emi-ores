@@ -5,6 +5,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 public class EmiOresClientNetworking {
     public static void registerClient() {
-        ClientPlayNetworking.registerGlobalReceiver(S2CSendFeaturesPacket.TYPE, FeaturesReciever::receive);
+        ClientPlayNetworking.registerGlobalReceiver(S2CSendFeaturesPacket.ID, FeaturesReciever::receive);
     }
 }

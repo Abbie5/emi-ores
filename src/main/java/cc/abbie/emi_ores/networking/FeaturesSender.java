@@ -1,8 +1,10 @@
 package cc.abbie.emi_ores.networking;
 
 import cc.abbie.emi_ores.networking.packet.S2CSendFeaturesPacket;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -17,7 +19,7 @@ import java.util.Map;
 
 public class FeaturesSender {
     public static void onSyncDataPackContents(ServerPlayer player, boolean joined) {
-        if (!ServerPlayNetworking.canSend(player, S2CSendFeaturesPacket.TYPE)) return;
+        if (!ServerPlayNetworking.canSend(player, S2CSendFeaturesPacket.ID)) return;
 
         Map<ResourceLocation, PlacedFeature> featureMap = new HashMap<>();
         player.server.registryAccess().registryOrThrow(Registries.PLACED_FEATURE).entrySet().forEach(entry -> {
@@ -35,7 +37,9 @@ public class FeaturesSender {
                 featureMap.put(entry.getKey().location(), new PlacedFeature(pf.feature(), newModifiers));
             }
         });
-        ServerPlayNetworking.send(player, new S2CSendFeaturesPacket(featureMap));
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        new S2CSendFeaturesPacket(featureMap).write(buf);
+        ServerPlayNetworking.send(player, S2CSendFeaturesPacket.ID, buf);
     }
 
     private static boolean isSupported(PlacementModifier modifier) {
