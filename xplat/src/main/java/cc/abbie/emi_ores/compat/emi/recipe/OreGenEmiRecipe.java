@@ -21,7 +21,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -119,7 +118,7 @@ public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public ResourceLocation getId() {
         return id;
     }
 

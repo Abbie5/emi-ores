@@ -1,7 +1,7 @@
 package cc.abbie.emi_ores.compat.emi.stack;
 
+import cc.abbie.emi_ores.platform.Services;
 import dev.emi.emi.api.stack.EmiStack;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -75,7 +75,7 @@ public class BiomeEmiStack extends EmiStack {
             list.add(ClientTooltipComponent.create(Component.literal(getId().toString()).withStyle(ChatFormatting.DARK_GRAY).getVisualOrderText()));
         }
         String namespace = getId().getNamespace();
-        String mod = FabricLoader.getInstance().getModContainer(namespace).get().getMetadata().getName();
+        String mod = Services.PLATFORM.getModName(namespace);
         list.add(ClientTooltipComponent.create(Component.literal(mod).withStyle(ChatFormatting.BLUE).withStyle(ChatFormatting.ITALIC).getVisualOrderText()));
         list.addAll(super.getTooltip());
         return list;

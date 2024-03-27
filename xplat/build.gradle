@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+    id 'agency.highlysuspect.minivan' version '0.2'
+}
+
+version = "${project.mod_version}+${project.minecraft_version}+xplat"
+
+minivan {
+    version(project.minecraft_version)
+}
+
+dependencies {
+    compileOnly "org.spongepowered:mixin:0.8.5"
+
+    compileOnly("dev.emi:emi-xplat-mojmap:${project.emi_version}:api")
+}

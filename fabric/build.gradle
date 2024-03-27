@@ -1,0 +1,45 @@
+plugins {
+    id 'fabric-loom' version '1.5-SNAPSHOT'
+}
+
+version = "${project.mod_version}+${project.minecraft_version}+fabric"
+
+loom {
+    runs {
+        client {
+            client()
+            ideConfigGenerated(true)
+        }
+        server {
+            server()
+            ideConfigGenerated(true)
+        }
+    }
+}
+
+dependencies {
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    compileOnly project(":xplat")
+
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
+    modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
+}
+
+compileJava {
+    source(project(":xplat").sourceSets.main.allSource)
+}
+
+processResources {
+    from project(":xplat").sourceSets.main.resources
+
+    filesMatching("fabric.mod.json") {
+        expand project.properties
+    }
+}

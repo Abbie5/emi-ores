@@ -23,7 +23,6 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProv
 import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.placement.*;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -117,7 +116,7 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public ResourceLocation getId() {
         return id;
     }
 
