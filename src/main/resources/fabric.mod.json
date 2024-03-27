@@ -17,10 +17,10 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "cc.abbie.emi_ores.client.EmiOresClient"
+      "cc.abbie.emi_ores.fabric.client.EmiOresFabricClient"
     ],
     "main": [
-      "cc.abbie.emi_ores.EmiOres"
+      "cc.abbie.emi_ores.fabric.EmiOresFabric"
     ],
     "emi": [
       "cc.abbie.emi_ores.compat.emi.EmiOresEmiPlugin"
