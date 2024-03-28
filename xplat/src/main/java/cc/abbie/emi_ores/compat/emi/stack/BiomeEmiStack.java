@@ -1,6 +1,6 @@
 package cc.abbie.emi_ores.compat.emi.stack;
 
-import cc.abbie.emi_ores.platform.Services;
+import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -74,9 +74,7 @@ public class BiomeEmiStack extends EmiStack {
         if (Minecraft.getInstance().options.advancedItemTooltips) {
             list.add(ClientTooltipComponent.create(Component.literal(getId().toString()).withStyle(ChatFormatting.DARK_GRAY).getVisualOrderText()));
         }
-        String namespace = getId().getNamespace();
-        String mod = Services.PLATFORM.getModName(namespace);
-        list.add(ClientTooltipComponent.create(Component.literal(mod).withStyle(ChatFormatting.BLUE).withStyle(ChatFormatting.ITALIC).getVisualOrderText()));
+        EmiTooltipComponents.appendModName(list, getId().getNamespace());
         list.addAll(super.getTooltip());
         return list;
     }
