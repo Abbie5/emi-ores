@@ -22,6 +22,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "refmap": "emi_ores.refmap.json"
+  }
 }

@@ -1,69 +1,57 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-    id 'org.spongepowered.mixin' version '0.7.+'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-version = "${project.mod_version}+${project.minecraft_version}+forge"
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
 
-minecraft {
-    mappings channel: 'official', version: project.minecraft_version
-
-    runs {
-        client {
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            ideaModule "${rootProject.name}.${project.name}.main"
-            mods {
-                emi_ores {
-                    source sourceSets.main
-                    source project(":xplat").sourceSets.main
-                }
-            }
-        }
-
-        server {
-            ideaModule "${rootProject.name}.${project.name}.main"
-            mods {
-                emi_ores {
-                    source sourceSets.main
-                    source project(":xplat").sourceSets.main
-                }
-            }
-        }
+loom {
+    forge {
+        mixinConfig "emi_ores.mixins.json"
     }
 }
 
+configurations {
+    common
+    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+}
+
 dependencies {
-    // To change the versions see the gradle.properties file
-    minecraft "net.minecraftforge:forge:${project.forge_version}"
+    forge "net.minecraftforge:forge:${rootProject.forge_version}"
 
-    compileOnly project(":xplat")
+    common(project(path: ":xplat", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":xplat", configuration: "transformProductionForge")) { transitive = false }
 
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-
-    compileOnly fg.deobf("dev.emi:emi-forge:${project.emi_version}:api")
-    runtimeOnly fg.deobf("dev.emi:emi-forge:${project.emi_version}")
-}
-
-mixin {
-    add sourceSets.main, 'emi_ores.refmap.json'
-    config 'emi_ores.mixins.json'
-}
-
-jar.finalizedBy('reobfJar')
-
-compileJava {
-    source(project(":xplat").sourceSets.main.allSource)
+    modCompileOnly "dev.emi:emi-forge:${project.emi_version}:api"
+    modLocalRuntime "dev.emi:emi-forge:${project.emi_version}"
 }
 
 processResources {
-    from project(":xplat").sourceSets.main.resources
+    filesMatching("META-INF/mods.toml") {
+        expand project.properties
+    }
 }
 
-jar {
-    manifest {
-        attributes([
-                "Implementation-Version" : project.jar.archiveVersion,
-        ])
+shadowJar {
+    exclude "fabric.mod.json"
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier = "dev-shadow"
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
     }
 }

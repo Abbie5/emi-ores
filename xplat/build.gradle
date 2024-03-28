@@ -1,16 +1,11 @@
-plugins {
-    id 'java'
-    id 'agency.highlysuspect.minivan' version '0.2'
-}
-
-version = "${project.mod_version}+${project.minecraft_version}+xplat"
-
-minivan {
-    version(project.minecraft_version)
+architectury {
+    common(rootProject.enabled_platforms.split(","))
 }
 
 dependencies {
-    compileOnly "org.spongepowered:mixin:0.8.5"
+    // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
+    // Do NOT use other classes from fabric loader
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
 
-    compileOnly("dev.emi:emi-xplat-mojmap:${project.emi_version}:api")
+    modCompileOnly "dev.emi:emi-xplat-intermediary:${rootProject.emi_version}:api"
 }

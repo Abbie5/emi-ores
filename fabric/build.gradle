@@ -1,46 +1,52 @@
 plugins {
-    id 'fabric-loom' version '1.5-SNAPSHOT'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-version = "${project.mod_version}+${project.minecraft_version}+fabric"
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
 
-loom {
-    runs {
-        client {
-            client()
-            ideConfigGenerated(true)
-        }
-        server {
-            server()
-            ideConfigGenerated(true)
-        }
-    }
-    mixin.defaultRefmapName = "emi_ores.refmap.json"
+configurations {
+    common
+    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
 }
 
 dependencies {
-    // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
-    compileOnly project(":xplat")
+    common(project(path: ":xplat", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":xplat", configuration: "transformProductionFabric")) { transitive false }
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
-    modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
-}
-
-compileJava {
-    source(project(":xplat").sourceSets.main.allSource)
+    modCompileOnly "dev.emi:emi-fabric:${rootProject.emi_version}:api"
+    modLocalRuntime "dev.emi:emi-fabric:${rootProject.emi_version}"
 }
 
 processResources {
-    from project(":xplat").sourceSets.main.resources
-
     filesMatching("fabric.mod.json") {
         expand project.properties
+    }
+}
+
+shadowJar {
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier = "dev-shadow"
+}
+
+remapJar {
+    injectAccessWidener = true
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
     }
 }

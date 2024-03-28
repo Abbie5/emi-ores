@@ -9,22 +9,11 @@ pluginManagement {
             url = 'https://maven.minecraftforge.net/'
         }
         maven {
-            name = 'Sleeping Town'
-            url = 'https://repo.sleeping.town/'
-        }
-        maven {
-            name = 'Spongepowered'
-            url = 'https://repo.spongepowered.org/repository/maven-public/'
-            content {
-                includeGroup 'org.spongepowered'
-            }
+            name = 'Architectury'
+            url = 'https://maven.architectury.dev/'
         }
         gradlePluginPortal()
     }
-}
-
-plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
 
 rootProject.name = "emi-ores"
