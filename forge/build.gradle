@@ -1,0 +1,69 @@
+plugins {
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+version = "${project.mod_version}+${project.minecraft_version}+forge"
+
+minecraft {
+    mappings channel: 'official', version: project.minecraft_version
+
+    runs {
+        client {
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            ideaModule "${rootProject.name}.${project.name}.main"
+            mods {
+                emi_ores {
+                    source sourceSets.main
+                    source project(":xplat").sourceSets.main
+                }
+            }
+        }
+
+        server {
+            ideaModule "${rootProject.name}.${project.name}.main"
+            mods {
+                emi_ores {
+                    source sourceSets.main
+                    source project(":xplat").sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    // To change the versions see the gradle.properties file
+    minecraft "net.minecraftforge:forge:${project.forge_version}"
+
+    compileOnly project(":xplat")
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    compileOnly fg.deobf("dev.emi:emi-forge:${project.emi_version}:api")
+    runtimeOnly fg.deobf("dev.emi:emi-forge:${project.emi_version}")
+}
+
+mixin {
+    add sourceSets.main, 'emi_ores.refmap.json'
+    config 'emi_ores.mixins.json'
+}
+
+jar.finalizedBy('reobfJar')
+
+compileJava {
+    source(project(":xplat").sourceSets.main.allSource)
+}
+
+processResources {
+    from project(":xplat").sourceSets.main.resources
+}
+
+jar {
+    manifest {
+        attributes([
+                "Implementation-Version" : project.jar.archiveVersion,
+        ])
+    }
+}

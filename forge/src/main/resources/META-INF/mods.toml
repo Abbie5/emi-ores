@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "LGPL-3.0-only"
+issueTrackerURL = "https://github.com/Abbie5/emi-ores/issues"
+
+[[mods]]
+modId = "emi_ores"
+version = "${file.jarVersion}"
+displayName = "Emi Ores"
+description = "Easily view ore generation information from inside EMI."
+authors = "Abbie"
+logoFile = "icon.png"
+logoBlur = false
+displayURL = "https://modrinth.com/mod/emi-ores"
+
+[[dependencies.emi_ores]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.emi_ores]]
+modId = "minecraft"
+mandatory = true
+versionRange = "${minecraft_version}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.emi_ores]]
+modId = "emi"
+mandatory = true
+versionRange = ">=${emi_version}"
+ordering = "NONE"
+side = "CLIENT"

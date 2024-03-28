@@ -15,6 +15,7 @@ loom {
             ideConfigGenerated(true)
         }
     }
+    mixin.defaultRefmapName = "emi_ores.refmap.json"
 }
 
 dependencies {

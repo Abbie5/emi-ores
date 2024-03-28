@@ -1,6 +1,7 @@
 package cc.abbie.emi_ores.networking.packet;
 
 import cc.abbie.emi_ores.EmiOres;
+import cc.abbie.emi_ores.client.FeaturesReciever;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -33,5 +34,9 @@ public class S2CSendFeaturesPacket {
 
     public Map<ResourceLocation, PlacedFeature> getFeatures() {
         return features;
+    }
+
+    public void handle() {
+        FeaturesReciever.receive(this);
     }
 }

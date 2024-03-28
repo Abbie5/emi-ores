@@ -12,7 +12,7 @@ public class EmiOresFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
         EmiOresClient.init();
 
-        ClientPlayNetworking.registerGlobalReceiver(S2CSendFeaturesPacket.ID, (client, handler, buf, sender) -> FeaturesReciever.receive(client, handler, buf));
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> FeaturesReciever.FEATURES = null);
+        ClientPlayNetworking.registerGlobalReceiver(S2CSendFeaturesPacket.ID, (client, handler, buf, sender) -> new S2CSendFeaturesPacket(buf).handle());
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> FeaturesReciever.clearFeatures());
     }
 }

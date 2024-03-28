@@ -1,10 +1,7 @@
 package cc.abbie.emi_ores.networking;
 
 import cc.abbie.emi_ores.networking.packet.S2CSendFeaturesPacket;
-import cc.abbie.emi_ores.platform.Services;
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -16,10 +13,12 @@ import net.minecraft.world.level.levelgen.placement.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 public class FeaturesSender {
-    public static void onSyncDataPackContents(ServerPlayer player, boolean joined) {
-        if (!Services.SERVER.canSend(player, S2CSendFeaturesPacket.ID)) return;
+    public static void onSyncDataPackContents(ServerPlayer player, Predicate<ServerPlayer> canSend, BiConsumer<ServerPlayer, S2CSendFeaturesPacket> sender) {
+        if (!canSend.test(player)) return;
 
         Map<ResourceLocation, PlacedFeature> featureMap = new HashMap<>();
         player.server.registryAccess().registryOrThrow(Registries.PLACED_FEATURE).entrySet().forEach(entry -> {
@@ -37,9 +36,7 @@ public class FeaturesSender {
                 featureMap.put(entry.getKey().location(), new PlacedFeature(pf.feature(), newModifiers));
             }
         });
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        new S2CSendFeaturesPacket(featureMap).write(buf);
-        Services.SERVER.send(player, S2CSendFeaturesPacket.ID, buf);
+        sender.accept(player, new S2CSendFeaturesPacket(featureMap));
     }
 
     private static boolean isSupported(PlacementModifier modifier) {
