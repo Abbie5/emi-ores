@@ -19,4 +19,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: EMI Ores ${{ env.commit_hash }}
-          path: build/libs/
+          path: |
+            fabric/build/libs/
+            forge/build/libs/
