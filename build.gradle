@@ -16,7 +16,10 @@ subprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        mappings loom.officialMojangMappings()
+        mappings loom.layered() {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-${rootProject.minecraft_version}:${rootProject.parchment_version}@zip")
+        }
     }
 }
 
@@ -34,6 +37,9 @@ allprojects {
     repositories {
         maven {
             url "https://maven.terraformersmc.com/releases/"
+        }
+        maven {
+            url "https://maven.parchmentmc.org/"
         }
     }
 
