@@ -57,7 +57,7 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
         }
         this.heightProvider = heightProvider;
         this.rarityChance = rarityChance;
-        this.biomes = EmiIngredient.of(biomes.stream().map(BiomeEmiStack::new).collect(Collectors.toList()));
+        this.biomes = EmiIngredient.of(biomes.stream().map(BiomeEmiStack::of).collect(Collectors.toList()));
 
         GeodeConfiguration config = (GeodeConfiguration) feature.feature().value().config();
 

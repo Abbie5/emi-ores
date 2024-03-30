@@ -18,8 +18,12 @@ import java.util.List;
 public class BiomeEmiStack extends EmiStack {
     private final Biome biome;
 
-    public BiomeEmiStack(Biome biome) {
+    private BiomeEmiStack(Biome biome) {
         this.biome = biome;
+    }
+
+    public static EmiStack of(Biome biome) {
+        return new BiomeEmiStack(biome);
     }
 
     @Override

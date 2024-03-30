@@ -109,7 +109,7 @@ public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
         this.countMax = countMax;
         this.rarityChance = rarityChance;
         this.heightProvider = heightProvider;
-        this.biomes = EmiIngredient.of(biomes.stream().map(BiomeEmiStack::new).toList());
+        this.biomes = EmiIngredient.of(biomes.stream().map(BiomeEmiStack::of).toList());
     }
 
     @Override
