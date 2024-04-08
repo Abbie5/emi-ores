@@ -15,7 +15,7 @@
   "emi_ores.distribution.anchor.below_bottom": "%s ниже дна",
   "emi_ores.distribution.anchor.top": "на вершине мира",
   "emi_ores.distribution.anchor.above_top": "%s выше вершины",
-  "emi_ores.distribution.anchor.below_top": "%s ниже дна,
+  "emi_ores.distribution.anchor.below_top": "%s ниже дна",
   "emi_ores.distribution.middle": "Наиболее распространено на %s",
   "emi_ores.distribution.middle_range": "Наиболее распространено от %s до %s"
 }
