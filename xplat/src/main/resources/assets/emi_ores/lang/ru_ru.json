@@ -1,0 +1,21 @@
+{
+  "emi.category.emi_ores.oregen": "Генерация руд",
+  "emi.category.emi_ores.geode": "Генерация жеод",
+
+  "emi_ores.veins_per_chunk": "%s в чанке",
+  "emi_ores.veins_per_chunk_range": "%s — %s в чанке",
+  "emi_ores.rarity_chance": "1 в %s чанках",
+  "emi_ores.discard_on_air_chance": "Вероятность пропуска при контакте с воздухом",
+  "emi_ores.distribution.uniform": "Равномерное распределение по высоте",
+  "emi_ores.distribution.triangle": "Треугольное распределение по высоте",
+  "emi_ores.distribution.trapezoid": "Трапецевидное распределение по высоте",
+  "emi_ores.distribution.range": "От %s до %s",
+  "emi_ores.distribution.anchor.bottom": "на дне мира",
+  "emi_ores.distribution.anchor.above_bottom": "%s выше дна",
+  "emi_ores.distribution.anchor.below_bottom": "%s ниже дна",
+  "emi_ores.distribution.anchor.top": "на вершине мира",
+  "emi_ores.distribution.anchor.above_top": "%s выше вершины",
+  "emi_ores.distribution.anchor.below_top": "%s ниже дна",
+  "emi_ores.distribution.middle": "Наиболее распространено на %s",
+  "emi_ores.distribution.middle_range": "Наиболее распространено от %s до %s"
+}
