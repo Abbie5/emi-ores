@@ -8,7 +8,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.Map;
 
-public class S2CSendFeaturesPacket {
+public class S2CSendFeaturesPacket implements Packet<S2CSendFeaturesPacket> {
     public static final ResourceLocation ID = EmiOres.id("s2c/send_features");
 
     private final Map<ResourceLocation, PlacedFeature> features;
@@ -24,6 +24,12 @@ public class S2CSendFeaturesPacket {
         );
     }
 
+    @Override
+    public ResourceLocation getId() {
+        return ID;
+    }
+
+    @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeMap(
                 features,
@@ -36,7 +42,13 @@ public class S2CSendFeaturesPacket {
         return features;
     }
 
+    @Override
     public void handle() {
         FeaturesReciever.receive(this);
+    }
+
+    @Override
+    public S2CSendFeaturesPacket create(FriendlyByteBuf buf) {
+        return new S2CSendFeaturesPacket(buf);
     }
 }

@@ -1,6 +1,7 @@
 package cc.abbie.emi_ores.compat.emi.recipe;
 
 import cc.abbie.emi_ores.EmiOres;
+import cc.abbie.emi_ores.client.FeaturesReciever;
 import cc.abbie.emi_ores.mixin.accessor.TrapezoidHeightAccessor;
 import cc.abbie.emi_ores.mixin.accessor.UniformHeightAccessor;
 import dev.emi.emi.api.recipe.EmiRecipe;
@@ -8,11 +9,11 @@ import dev.emi.emi.api.widget.TextWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -87,21 +88,12 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
     }
 
     protected static List<Biome> getBiomes(ResourceLocation id, PlacedFeature feature) {
-        return Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(Registries.BIOME)
+        Registry<Biome> biomeRegistry = Minecraft.getInstance().level.registryAccess().registryOrThrow(Registries.BIOME);
+        return FeaturesReciever.getBiomes()
+                .get(ResourceKey.create(Registries.PLACED_FEATURE, id))
                 .stream()
-                .filter(biome -> {
-                    var features = biome.getGenerationSettings().features();
-                    for (HolderSet<PlacedFeature> holderSet : features) {
-                        for (Holder<PlacedFeature> holder : holderSet) {
-                            if (holder.unwrap().map(
-                                    resourceKey -> resourceKey.location().equals(id),
-                                    placedFeature -> placedFeature.equals(feature)
-                            )) return true;
-                        }
-                    }
-                    return false;
-                }).toList();
+                .map(biomeRegistry::get)
+                .toList();
     }
 
     protected static void addDistributionGraph(WidgetHolder widgets, int x, int y, HeightProvider heightProvider) {

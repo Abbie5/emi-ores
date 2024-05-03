@@ -25,7 +25,7 @@ public class EmiOresFabric implements ModInitializer {
                 (pl, pk) -> {
                     FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                     pk.write(buf);
-                    ServerPlayNetworking.send(pl, S2CSendFeaturesPacket.ID, buf);
+                    ServerPlayNetworking.send(pl, pk.getId(), buf);
                 }
         );
     }
