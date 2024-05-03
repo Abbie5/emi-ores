@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {
+      "type": "directory",
+      "source": "emi_ores/biome_icon",
+      "prefix": "emi_ores/biome_icon/"
+    }
+  ]
+}

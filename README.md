@@ -38,6 +38,8 @@ I currently consider this mod to be in an **ALPHA** state. It is still in the ea
 | Display villager trades | ❌[^2] | ✅ | ❌ |
 | Display enchantments available on items | ⭕[^3] | ✅ | ❌ |
 
+Vanilla biome icons licensed [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) by the Minecraft Fandom Wiki contributors, taken from the [Biome wiki page](https://minecraft.fandom.com/wiki/Biome).
+
 [^1]: See [EMI Loot](https://modrinth.com/mod/emi-loot).
 [^2]: See [EMI Trades](https://modrinth.com/mod/emitrades).
 [^3]: Basic functionality available in EMI, also see [EMI Enchanting](https://modrinth.com/mod/emi-enchanting).
