@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[43,)"
 license = "LGPL-3.0-only"
 issueTrackerURL = "https://github.com/Abbie5/emi-ores/issues"
 
@@ -16,7 +16,7 @@ displayURL = "https://modrinth.com/mod/emi-ores"
 [[dependencies.emi_ores]]
 modId = "forge"
 mandatory = true
-versionRange = "[47,)"
+versionRange = "[43,)"
 ordering = "NONE"
 side = "BOTH"
 

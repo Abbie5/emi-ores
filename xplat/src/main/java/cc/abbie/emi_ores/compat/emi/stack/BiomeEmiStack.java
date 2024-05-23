@@ -6,11 +6,10 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.serializer.EmiStackSerializer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -40,19 +39,18 @@ public class BiomeEmiStack extends EmiStack {
     }
 
     @Override
-    public void render(GuiGraphics gui, int x, int y, float delta, int flags) {
+    public void render(PoseStack pose, int x, int y, float delta, int flags) {
         Minecraft client = Minecraft.getInstance();
 
         if ((flags & RENDER_ICON) != 0) {
-            PoseStack pose = gui.pose();
             pose.pushPose();
             pose.translate(0, 0, 150);
 
             TextureAtlasSprite sprite = client.getModelManager()
                     .getAtlas(new ResourceLocation("textures/atlas/blocks.png"))
-                    .getSprite(getId().withPrefix("emi_ores/biome_icon/"));
+                    .getSprite(new ResourceLocation(getId().getNamespace(), "emi_ores/biome_icon/" + getId().getPath()));
 
-            gui.blit(x, y, 0, 16, 16, sprite);
+            GuiComponent.blit(pose, x, y, 0, 16, 16, sprite);
 
             pose.popPose();
         }
@@ -75,7 +73,7 @@ public class BiomeEmiStack extends EmiStack {
 
     @Override
     public ResourceLocation getId() {
-        return Minecraft.getInstance().level.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome);
+        return Minecraft.getInstance().level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
     }
 
     @Override
@@ -108,7 +106,7 @@ public class BiomeEmiStack extends EmiStack {
 
         @Override
         public EmiStack create(ResourceLocation id, CompoundTag nbt, long amount) {
-            Registry<Biome> biomeRegistry = Minecraft.getInstance().level.registryAccess().registryOrThrow(Registries.BIOME);
+            Registry<Biome> biomeRegistry = Minecraft.getInstance().level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
             return BiomeEmiStack.of(biomeRegistry.get(id), nbt, amount);
         }
     }

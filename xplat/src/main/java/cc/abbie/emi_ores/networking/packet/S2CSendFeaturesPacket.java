@@ -20,7 +20,7 @@ public class S2CSendFeaturesPacket implements Packet<S2CSendFeaturesPacket> {
     public S2CSendFeaturesPacket(FriendlyByteBuf buf) {
         this.features = buf.readMap(
                 FriendlyByteBuf::readResourceLocation,
-                friendlyByteBuf -> friendlyByteBuf.readJsonWithCodec(PlacedFeature.DIRECT_CODEC)
+                friendlyByteBuf -> friendlyByteBuf.readWithCodec(PlacedFeature.DIRECT_CODEC)
         );
     }
 
@@ -34,7 +34,7 @@ public class S2CSendFeaturesPacket implements Packet<S2CSendFeaturesPacket> {
         buf.writeMap(
                 features,
                 FriendlyByteBuf::writeResourceLocation,
-                (friendlyByteBuf, feature) -> friendlyByteBuf.writeJsonWithCodec(PlacedFeature.DIRECT_CODEC, feature)
+                (friendlyByteBuf, feature) -> friendlyByteBuf.writeWithCodec(PlacedFeature.DIRECT_CODEC, feature)
         );
     }
 

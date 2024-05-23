@@ -11,7 +11,6 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiRegistryAdapter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
@@ -27,7 +26,7 @@ public class EmiOresEmiPlugin implements EmiPlugin {
     public void register(EmiRegistry registry) {
         Minecraft client = Minecraft.getInstance();
         client.level.registryAccess()
-                .registryOrThrow(Registries.BIOME)
+                .registryOrThrow(Registry.BIOME_REGISTRY)
                 .stream()
                 .map(BiomeEmiStack::of)
                 .forEach(registry::addEmiStack);
@@ -49,7 +48,7 @@ public class EmiOresEmiPlugin implements EmiPlugin {
 
     @Override
     public void initialize(EmiInitRegistry registry) {
-        Registry<Biome> biomeRegistry = Minecraft.getInstance().level.registryAccess().registryOrThrow(Registries.BIOME);
+        Registry<Biome> biomeRegistry = Minecraft.getInstance().level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
 
         registry.addRegistryAdapter(EmiRegistryAdapter.simple(Biome.class, biomeRegistry, BiomeEmiStack::of));
         registry.addIngredientSerializer(BiomeEmiStack.class, new BiomeEmiStack.Serializer());

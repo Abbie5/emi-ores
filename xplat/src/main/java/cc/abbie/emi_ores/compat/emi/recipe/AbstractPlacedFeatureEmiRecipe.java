@@ -10,7 +10,6 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
@@ -88,9 +87,9 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
     }
 
     protected static List<Biome> getBiomes(ResourceLocation id, PlacedFeature feature) {
-        Registry<Biome> biomeRegistry = Minecraft.getInstance().level.registryAccess().registryOrThrow(Registries.BIOME);
+        Registry<Biome> biomeRegistry = Minecraft.getInstance().level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
         return FeaturesReciever.getBiomes()
-                .get(ResourceKey.create(Registries.PLACED_FEATURE, id))
+                .get(ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, id))
                 .stream()
                 .map(biomeRegistry::get)
                 .toList();
