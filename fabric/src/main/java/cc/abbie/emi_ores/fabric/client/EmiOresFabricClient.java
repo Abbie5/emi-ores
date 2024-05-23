@@ -13,8 +13,14 @@ public class EmiOresFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
         EmiOresClient.init();
 
-        ClientPlayNetworking.registerGlobalReceiver(S2CSendFeaturesPacket.ID, (client, handler, buf, sender) -> new S2CSendFeaturesPacket(buf).handle());
-        ClientPlayNetworking.registerGlobalReceiver(S2CSendBiomeInfoPacket.ID, (client, handler, buf, sender) -> new S2CSendBiomeInfoPacket(buf).handle());
+        ClientPlayNetworking.registerGlobalReceiver(S2CSendFeaturesPacket.ID, (client, handler, buf, sender) -> {
+            buf.readByte();
+            new S2CSendFeaturesPacket(buf).handle();
+        });
+        ClientPlayNetworking.registerGlobalReceiver(S2CSendBiomeInfoPacket.ID, (client, handler, buf, sender) -> {
+            buf.readByte();
+            new S2CSendBiomeInfoPacket(buf).handle();
+        });
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> FeaturesReciever.clearFeatures());
     }
 }

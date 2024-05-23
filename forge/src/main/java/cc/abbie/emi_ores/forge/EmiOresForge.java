@@ -26,7 +26,7 @@ public class EmiOresForge {
                 playerListPlayer,
                 p -> true,
                 (player, packet) ->
-                        EmiOresPacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet)
+                        EmiOresPacketHandler.CHANNELS.get(packet.getClass()).send(PacketDistributor.PLAYER.with(() -> player), packet)
         ));
     }
 }

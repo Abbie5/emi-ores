@@ -21,9 +21,10 @@ public class EmiOresFabric implements ModInitializer {
     public static void onSyncDatapackContents(ServerPlayer player, boolean joined) {
         FeaturesSender.onSyncDataPackContents(
                 player,
-                p -> ServerPlayNetworking.canSend(p, S2CSendFeaturesPacket.ID),
+                p -> true,
                 (pl, pk) -> {
                     FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+                    buf.writeByte(0); // appease Forge
                     pk.write(buf);
                     ServerPlayNetworking.send(pl, pk.getId(), buf);
                 }
