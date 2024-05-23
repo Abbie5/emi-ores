@@ -15,8 +15,6 @@ The mod is required on both client and server in order to function; if present o
 
 Owing to the fact that this mod gathers its data from data pack configured/placed features, modded ores should display correctly without additional configuration in the vast majority of cases.
 
-I currently consider this mod to be in an **ALPHA** state. It is still in the early stages of development and is subject to change. If you find any bugs or have a suggestion on how the mod should function, please open a ticket on the [issue tracker](https://github.com/Abbie5/emi-ores/issues).
-
 ## Screenshots
 
 ![ore_diamond](https://github.com/Abbie5/emi-ores/assets/43531981/3315b2ad-077c-417b-ba07-fcf0c8654b0c)
