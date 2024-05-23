@@ -6,7 +6,7 @@ issueTrackerURL = "https://github.com/Abbie5/emi-ores/issues"
 [[mods]]
 modId = "emi_ores"
 version = "${version}"
-displayName = "Emi Ores"
+displayName = "EMI Ores"
 description = "Easily view ore generation information from inside EMI."
 authors = "Abbie"
 logoFile = "icon.png"
