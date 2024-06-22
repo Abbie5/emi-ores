@@ -32,18 +32,20 @@ public class EmiOresEmiPlugin implements EmiPlugin {
                 .map(BiomeEmiStack::of)
                 .forEach(registry::addEmiStack);
 
-        Map<ResourceLocation, PlacedFeature> features = FeaturesReciever.getFeatures();
-        if (features.isEmpty()) return;
-
         registry.addCategory(EmiOresRecipeCategories.OREGEN);
         registry.addCategory(EmiOresRecipeCategories.GEODE);
 
-        features.forEach((id, placedFeature) -> {
-            FeatureConfiguration fc = placedFeature.feature().value().config();
-            if (fc instanceof OreConfiguration)
-                registry.addRecipe(new OreGenEmiRecipe(placedFeature, id));
-            else if (fc instanceof GeodeConfiguration)
-                registry.addRecipe(new GeodeGenEmiRecipe(placedFeature, id));
+        registry.addDeferredRecipes(consumer -> {
+            Map<ResourceLocation, PlacedFeature> features = FeaturesReciever.getFeatures();
+            if (features.isEmpty()) return;
+
+            features.forEach((id, placedFeature) -> {
+                FeatureConfiguration fc = placedFeature.feature().value().config();
+                if (fc instanceof OreConfiguration)
+                    consumer.accept(new OreGenEmiRecipe(placedFeature, id));
+                else if (fc instanceof GeodeConfiguration)
+                    consumer.accept(new GeodeGenEmiRecipe(placedFeature, id));
+            });
         });
     }
 
