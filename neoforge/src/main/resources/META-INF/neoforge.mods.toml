@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[4,)"
 license = "LGPL-3.0-only"
 issueTrackerURL = "https://github.com/Abbie5/emi-ores/issues"
 
@@ -14,22 +14,25 @@ logoBlur = false
 displayURL = "https://modrinth.com/mod/emi-ores"
 
 [[dependencies.emi_ores]]
-modId = "forge"
-mandatory = true
-versionRange = "[47,)"
+modId = "neoforge"
+type = "required"
+versionRange = "[21,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.emi_ores]]
 modId = "minecraft"
-mandatory = true
+type = "required"
 versionRange = "${minecraft_version}"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.emi_ores]]
 modId = "emi"
-mandatory = true
-versionRange = ">=${emi_version}"
+type = "required"
+versionRange = "${neoforge_emi_version}"
 ordering = "NONE"
 side = "CLIENT"
+
+[[mixins]]
+config = "emi_ores.mixins.json"

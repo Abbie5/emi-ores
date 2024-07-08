@@ -94,7 +94,7 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
             return EmiIngredient.of(((WeightedStateProviderAccessor) weighted).getWeightedList()
                     .unwrap()
                     .stream()
-                    .map(WeightedEntry.Wrapper::getData)
+                    .map(WeightedEntry.Wrapper::data)
                     .map(BlockState::getBlock)
                     .map(EmiStack::of)
                     .toList());

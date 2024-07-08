@@ -1,14 +1,14 @@
 package cc.abbie.emi_ores.networking;
 
-import cc.abbie.emi_ores.networking.packet.Packet;
-import cc.abbie.emi_ores.networking.packet.S2CSendBiomeInfoPacket;
-import cc.abbie.emi_ores.networking.packet.S2CSendFeaturesPacket;
+import cc.abbie.emi_ores.networking.packet.S2CSendBiomeInfoPayload;
+import cc.abbie.emi_ores.networking.packet.S2CSendFeaturesPayload;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,7 +26,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 public class FeaturesSender {
-    public static void onSyncDataPackContents(ServerPlayer player, Predicate<ServerPlayer> canSend, BiConsumer<ServerPlayer, Packet<?>> sender) {
+    public static void onSyncDataPackContents(ServerPlayer player, Predicate<ServerPlayer> canSend, BiConsumer<ServerPlayer, CustomPacketPayload> sender) {
         if (!canSend.test(player)) return;
 
         Map<ResourceLocation, PlacedFeature> featureMap = new HashMap<>();
@@ -61,8 +61,8 @@ public class FeaturesSender {
         var features2biomes2 = Multimaps.filterKeys(features2biomes, k -> featureMap.containsKey(k.location()));
 //        var featureMap2 = Maps.filterKeys(featureMap, k -> features2biomes2.containsKey(ResourceKey.create(Registries.PLACED_FEATURE, k)));
 
-        sender.accept(player, new S2CSendBiomeInfoPacket(features2biomes2));
-        sender.accept(player, new S2CSendFeaturesPacket(featureMap));
+        sender.accept(player, new S2CSendBiomeInfoPayload(features2biomes2));
+        sender.accept(player, new S2CSendFeaturesPayload(featureMap));
     }
 
     private static boolean isSupported(PlacementModifier modifier) {

@@ -2,8 +2,6 @@ package cc.abbie.emi_ores.fabric.client;
 
 import cc.abbie.emi_ores.client.EmiOresClient;
 import cc.abbie.emi_ores.client.FeaturesReciever;
-import cc.abbie.emi_ores.networking.packet.S2CSendBiomeInfoPacket;
-import cc.abbie.emi_ores.networking.packet.S2CSendFeaturesPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;

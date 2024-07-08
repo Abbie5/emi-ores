@@ -1,7 +1,7 @@
 package cc.abbie.emi_ores.client;
 
-import cc.abbie.emi_ores.networking.packet.S2CSendBiomeInfoPacket;
-import cc.abbie.emi_ores.networking.packet.S2CSendFeaturesPacket;
+import cc.abbie.emi_ores.networking.packet.S2CSendBiomeInfoPayload;
+import cc.abbie.emi_ores.networking.packet.S2CSendFeaturesPayload;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import net.minecraft.resources.ResourceKey;
@@ -29,11 +29,11 @@ public class FeaturesReciever {
         return BIOMES;
     }
 
-    public static void receive(S2CSendFeaturesPacket packet) {
-        FEATURES = packet.getFeatures();
+    public static void receive(S2CSendFeaturesPayload payload) {
+        FEATURES = payload.features();
     }
 
-    public static void receive(S2CSendBiomeInfoPacket packet) {
-        BIOMES = packet.getBiomes();
+    public static void receive(S2CSendBiomeInfoPayload payload) {
+        BIOMES = payload.biomeInfo();
     }
 }
