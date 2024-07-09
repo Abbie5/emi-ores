@@ -24,7 +24,7 @@ public class EmiOresFabric implements ModInitializer {
     public static void onSyncDatapackContents(ServerPlayer player, boolean joined) {
         FeaturesSender.onSyncDataPackContents(
                 player,
-                p -> true,
+                ServerPlayNetworking::canSend,
                 ServerPlayNetworking::send
         );
     }

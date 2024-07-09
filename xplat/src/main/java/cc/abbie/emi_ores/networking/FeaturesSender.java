@@ -23,11 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 public class FeaturesSender {
-    public static void onSyncDataPackContents(ServerPlayer player, Predicate<ServerPlayer> canSend, BiConsumer<ServerPlayer, CustomPacketPayload> sender) {
-        if (!canSend.test(player)) return;
+    public static void onSyncDataPackContents(ServerPlayer player, BiPredicate<ServerPlayer, CustomPacketPayload.Type<?>> canSend, BiConsumer<ServerPlayer, CustomPacketPayload> sender) {
+        if (!canSend.test(player, S2CSendBiomeInfoPayload.TYPE) || !canSend.test(player, S2CSendFeaturesPayload.TYPE)) {
+            return;
+        }
 
         Map<ResourceLocation, PlacedFeature> featureMap = new HashMap<>();
         SetMultimap<ResourceKey<PlacedFeature>, ResourceKey<Biome>> features2biomes = HashMultimap.create();

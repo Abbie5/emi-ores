@@ -26,7 +26,7 @@ public class EmiOresForge {
     }
 
     private void registerPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(EmiOres.MODID).versioned("1.0.0");
+        PayloadRegistrar registrar = event.registrar(EmiOres.MODID).versioned("1.0.0").optional();
 
         registrar.playToClient(S2CSendBiomeInfoPayload.TYPE, S2CSendBiomeInfoPayload.CODEC, (payload, context) -> {
             context.enqueueWork(() -> FeaturesReciever.receive(payload));
@@ -41,7 +41,7 @@ public class EmiOresForge {
         List<ServerPlayer> players = event.getPlayer() == null ? event.getPlayerList().getPlayers() : List.of(event.getPlayer());
         players.forEach(player -> FeaturesSender.onSyncDataPackContents(
                 player,
-                p -> true,
+                (ply, pay) -> ply.connection.hasChannel(pay),
                 PacketDistributor::sendToPlayer
         ));
     }
