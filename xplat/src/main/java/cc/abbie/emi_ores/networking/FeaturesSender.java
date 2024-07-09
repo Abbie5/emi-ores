@@ -1,7 +1,7 @@
 package cc.abbie.emi_ores.networking;
 
-import cc.abbie.emi_ores.networking.packet.S2CSendBiomeInfoPayload;
-import cc.abbie.emi_ores.networking.packet.S2CSendFeaturesPayload;
+import cc.abbie.emi_ores.networking.payload.S2CSendBiomeInfoPayload;
+import cc.abbie.emi_ores.networking.payload.S2CSendFeaturesPayload;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;

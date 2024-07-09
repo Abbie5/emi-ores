@@ -1,7 +1,7 @@
 package cc.abbie.emi_ores.client;
 
-import cc.abbie.emi_ores.networking.packet.S2CSendBiomeInfoPayload;
-import cc.abbie.emi_ores.networking.packet.S2CSendFeaturesPayload;
+import cc.abbie.emi_ores.networking.payload.S2CSendBiomeInfoPayload;
+import cc.abbie.emi_ores.networking.payload.S2CSendFeaturesPayload;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import net.minecraft.resources.ResourceKey;
