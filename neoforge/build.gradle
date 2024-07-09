@@ -26,16 +26,16 @@ configurations {
 
 repositories {
     maven {
-        name = 'NeoForged'
-        url = 'https://maven.neoforged.net/releases'
+        name = "NeoForged"
+        url = "https://maven.neoforged.net/releases"
     }
 }
 
 dependencies {
     neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
 
-    common(project(path: ':xplat', configuration: 'namedElements')) { transitive false }
-    shadowBundle project(path: ':xplat', configuration: 'transformProductionNeoForge')
+    common(project(path: ":xplat", configuration: "namedElements")) { transitive false }
+    shadowBundle(project(path: ":xplat", configuration: "transformProductionNeoForge"))
 
     modCompileOnly "dev.emi:emi-neoforge:${project.emi_version}:api"
     modLocalRuntime "dev.emi:emi-neoforge:${project.emi_version}"
@@ -49,11 +49,11 @@ processResources {
 
 shadowJar {
     configurations = [project.configurations.shadowBundle]
-    archiveClassifier = 'dev-shadow'
+    archiveClassifier = "dev-shadow"
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
+    inputFile.set shadowJar.archiveFile
 }
 
 components.java {

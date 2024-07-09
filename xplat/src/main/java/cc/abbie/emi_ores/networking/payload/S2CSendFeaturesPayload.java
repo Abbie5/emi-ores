@@ -23,7 +23,7 @@ public record S2CSendFeaturesPayload(Map<ResourceLocation, PlacedFeature> featur
     public static final Type<S2CSendFeaturesPayload> TYPE = new Type<>(EmiOres.id("send_features"));
     public static final StreamCodec<FriendlyByteBuf, S2CSendFeaturesPayload> CODEC = StreamCodec.of(S2CSendFeaturesPayload::encode, S2CSendFeaturesPayload::decode);
     private static final Gson GSON = new Gson();
-    private static final StreamCodec<ByteBuf, PlacedFeature> INNER_CODEC = ByteBufCodecs.STRING_UTF8.map(
+    private static final StreamCodec<ByteBuf, PlacedFeature> PLACED_FEATURE_CODEC = ByteBufCodecs.STRING_UTF8.map(
             json -> {
                 JsonElement jsonelement = GsonHelper.fromJson(GSON, json, JsonElement.class);
                 DataResult<PlacedFeature> dataresult = PlacedFeature.DIRECT_CODEC.parse(JsonOps.INSTANCE, jsonelement);
@@ -41,7 +41,7 @@ public record S2CSendFeaturesPayload(Map<ResourceLocation, PlacedFeature> featur
     public static S2CSendFeaturesPayload decode(FriendlyByteBuf buffer) {
         var features = buffer.readMap(
                 ResourceLocation.STREAM_CODEC,
-                INNER_CODEC
+                PLACED_FEATURE_CODEC
         );
 
         return new S2CSendFeaturesPayload(features);
@@ -50,7 +50,7 @@ public record S2CSendFeaturesPayload(Map<ResourceLocation, PlacedFeature> featur
     public static void encode(FriendlyByteBuf buffer, S2CSendFeaturesPayload packet) {
         buffer.writeMap(packet.features,
                 ResourceLocation.STREAM_CODEC,
-                INNER_CODEC
+                PLACED_FEATURE_CODEC
         );
     }
 
