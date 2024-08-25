@@ -66,21 +66,23 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
             return Component.literal(String.valueOf(absolute.y()));
         } else if (anchor instanceof VerticalAnchor.AboveBottom aboveBottom) {
             int offset = aboveBottom.offset();
+            int height = Minecraft.getInstance().level.getMinBuildHeight() + offset;
             if (offset == 0) {
-                return Component.translatable("emi_ores.distribution.anchor.bottom");
+                return Component.translatable("emi_ores.distribution.anchor.bottom", height);
             } else if (offset > 0) {
-                return Component.translatable("emi_ores.distribution.anchor.above_bottom", offset);
+                return Component.translatable("emi_ores.distribution.anchor.above_bottom", offset, height);
             } else {
-                return Component.translatable("emi_ores.distribution.anchor.below_bottom", -offset);
+                return Component.translatable("emi_ores.distribution.anchor.below_bottom", -offset, height);
             }
         } else if (anchor instanceof VerticalAnchor.BelowTop belowTop) {
             int offset = -belowTop.offset();
+            int height = Minecraft.getInstance().level.getMaxBuildHeight() + offset;
             if (offset == 0) {
-                return Component.translatable("emi_ores.distribution.anchor.top");
+                return Component.translatable("emi_ores.distribution.anchor.top", height);
             } else if (offset > 0) {
-                return Component.translatable("emi_ores.distribution.anchor.above_top", offset);
+                return Component.translatable("emi_ores.distribution.anchor.above_top", offset, height);
             } else {
-                return Component.translatable("emi_ores.distribution.anchor.below_top", -offset);
+                return Component.translatable("emi_ores.distribution.anchor.below_top", -offset, height);
             }
         } else {
             throw new RuntimeException();
