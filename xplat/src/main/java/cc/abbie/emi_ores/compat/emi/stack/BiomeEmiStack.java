@@ -13,6 +13,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class BiomeEmiStack extends EmiStack {
             pose.translate(0, 0, 150);
 
             TextureAtlasSprite sprite = client.getModelManager()
-                    .getAtlas(new ResourceLocation("textures/atlas/blocks.png"))
+                    .getAtlas(InventoryMenu.BLOCK_ATLAS)
                     .getSprite(new ResourceLocation(getId().getNamespace(), "emi_ores/biome_icon/" + getId().getPath()));
 
             GuiComponent.blit(pose, x, y, 0, 16, 16, sprite);
