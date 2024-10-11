@@ -54,6 +54,7 @@
     "minecraft:water_on_map_outlines",
     "minecraft:without_patrol_spawns",
     "minecraft:without_wandering_trader_spawns",
-    "minecraft:without_zombie_sieges"
+    "minecraft:without_zombie_sieges",
+    "minecraft:has_structure/trial_chambers"
   ]
 }
