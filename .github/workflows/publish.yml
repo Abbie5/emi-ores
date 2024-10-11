@@ -15,13 +15,13 @@ jobs:
       - uses: gradle/wrapper-validation-action@v2
       - uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: 21
           distribution: temurin
       - uses: gradle/actions/setup-gradle@v3
       - run: ./gradlew build
       - uses: Kir-Antipov/mc-publish@v3.3
         with:
-          files: build/libs/*
+          files: fabric/build/libs/*
           modrinth-id: sG4TqDb8
           modrinth-featured: false
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
