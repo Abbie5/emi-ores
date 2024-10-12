@@ -1,5 +1,6 @@
 package cc.abbie.emi_ores.compat.emi.stack;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;
@@ -8,6 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -50,6 +52,9 @@ public class BiomeEmiStack extends EmiStack {
             TextureAtlasSprite sprite = client.getModelManager()
                     .getAtlas(InventoryMenu.BLOCK_ATLAS)
                     .getSprite(new ResourceLocation(getId().getNamespace(), "emi_ores/biome_icon/" + getId().getPath()));
+
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+            RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 
             GuiComponent.blit(pose, x, y, 0, 16, 16, sprite);
 
