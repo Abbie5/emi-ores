@@ -1,4 +1,4 @@
-package cc.abbie.emi_ores.forge.client;
+package cc.abbie.emi_ores.neoforge.client;
 
 import cc.abbie.emi_ores.EmiOres;
 import cc.abbie.emi_ores.client.EmiOresClient;
@@ -13,7 +13,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import static net.neoforged.fml.common.EventBusSubscriber.*;
 
 @EventBusSubscriber(modid = EmiOres.MODID, bus = Bus.MOD, value = Dist.CLIENT)
-public class EmiOresForgeClient {
+public class EmiOresNeoForgeClient {
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         EmiOresClient.init();

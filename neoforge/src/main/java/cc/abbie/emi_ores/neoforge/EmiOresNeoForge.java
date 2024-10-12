@@ -1,4 +1,4 @@
-package cc.abbie.emi_ores.forge;
+package cc.abbie.emi_ores.neoforge;
 
 import cc.abbie.emi_ores.EmiOres;
 import cc.abbie.emi_ores.client.FeaturesReciever;
@@ -7,6 +7,7 @@ import cc.abbie.emi_ores.networking.payload.S2CSendBiomeInfoPayload;
 import cc.abbie.emi_ores.networking.payload.S2CSendFeaturesPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
@@ -17,11 +18,11 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import java.util.List;
 
 @Mod(EmiOres.MODID)
-public class EmiOresForge {
-    public EmiOresForge(IEventBus modBus) {
+public class EmiOresNeoForge {
+    public EmiOresNeoForge(ModContainer mod, IEventBus modBus) {
         EmiOres.init();
 
-        NeoForge.EVENT_BUS.addListener(EmiOresForge::onDatapackSync);
+        NeoForge.EVENT_BUS.addListener(EmiOresNeoForge::onDatapackSync);
         modBus.addListener(this::registerPayloads);
     }
 
