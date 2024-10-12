@@ -27,14 +27,14 @@ public class EmiOresNeoForge {
     }
 
     private void registerPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(EmiOres.MODID).versioned("1.0.0").optional();
+        PayloadRegistrar registrar = event.registrar("1").optional();
 
         registrar.playToClient(S2CSendBiomeInfoPayload.TYPE, S2CSendBiomeInfoPayload.CODEC, (payload, context) -> {
-            context.enqueueWork(() -> FeaturesReciever.receive(payload));
+            FeaturesReciever.receive(payload);
         });
 
         registrar.playToClient(S2CSendFeaturesPayload.TYPE, S2CSendFeaturesPayload.CODEC, (payload, context) -> {
-            context.enqueueWork(() -> FeaturesReciever.receive(payload));
+            FeaturesReciever.receive(payload);
         });
     }
 
@@ -42,7 +42,7 @@ public class EmiOresNeoForge {
         List<ServerPlayer> players = event.getPlayer() == null ? event.getPlayerList().getPlayers() : List.of(event.getPlayer());
         players.forEach(player -> FeaturesSender.onSyncDataPackContents(
                 player,
-                (ply, pay) -> ply.connection.hasChannel(pay),
+                (p, t) -> true,
                 PacketDistributor::sendToPlayer
         ));
     }
