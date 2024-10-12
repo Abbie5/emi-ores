@@ -130,12 +130,6 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
 
             if (plateau == 0) {
                 type = HeightProviderType.TRIANGULAR;
-
-                if (midLow != null) {
-                    widgets.addText(anchorText(midLow), 80, 8, 0, false)
-                            .verticalAlign(TextWidget.Alignment.CENTER)
-                            .horizontalAlign(TextWidget.Alignment.CENTER);
-                }
             } else {
                 type = HeightProviderType.TRAPEZOID;
             }
@@ -147,6 +141,11 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
         if (type != null && min != null && max != null) {
             widgets.addTexture(DISTRIBUTION, x, y, 32, 16, 0, type.v)
                     .tooltipText(getDistributionGraphTooltip(type, min, max, midLow, midHigh));
+            if (type == HeightProviderType.TRIANGULAR && midLow != null) {
+                widgets.addText(anchorText(midLow), 80, 8, 0, false)
+                        .verticalAlign(TextWidget.Alignment.CENTER)
+                        .horizontalAlign(TextWidget.Alignment.CENTER);
+            }
             widgets.addText(anchorText(min), x, y+8, 0, false)
                     .verticalAlign(TextWidget.Alignment.CENTER)
                     .horizontalAlign(TextWidget.Alignment.END);
