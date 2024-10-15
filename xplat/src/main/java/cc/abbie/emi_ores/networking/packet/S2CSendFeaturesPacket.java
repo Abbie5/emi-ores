@@ -2,6 +2,7 @@ package cc.abbie.emi_ores.networking.packet;
 
 import cc.abbie.emi_ores.EmiOres;
 import cc.abbie.emi_ores.client.FeaturesReciever;
+import cc.abbie.emi_ores.networking.NetworkUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -20,7 +21,7 @@ public class S2CSendFeaturesPacket implements Packet<S2CSendFeaturesPacket> {
     public S2CSendFeaturesPacket(FriendlyByteBuf buf) {
         this.features = buf.readMap(
                 FriendlyByteBuf::readResourceLocation,
-                friendlyByteBuf -> friendlyByteBuf.readJsonWithCodec(PlacedFeature.DIRECT_CODEC)
+                friendlyByteBuf -> NetworkUtils.readNbtWithCodec(buf, PlacedFeature.DIRECT_CODEC)
         );
     }
 
@@ -34,7 +35,7 @@ public class S2CSendFeaturesPacket implements Packet<S2CSendFeaturesPacket> {
         buf.writeMap(
                 features,
                 FriendlyByteBuf::writeResourceLocation,
-                (friendlyByteBuf, feature) -> friendlyByteBuf.writeJsonWithCodec(PlacedFeature.DIRECT_CODEC, feature)
+                (friendlyByteBuf, feature) -> NetworkUtils.writeNbtWithCodec(buf, PlacedFeature.DIRECT_CODEC, feature)
         );
     }
 
