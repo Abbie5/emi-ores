@@ -1,5 +1,6 @@
 package cc.abbie.emi_ores.compat.emi;
 
+import cc.abbie.emi_ores.EmiOres;
 import cc.abbie.emi_ores.client.FeaturesReciever;
 import cc.abbie.emi_ores.compat.emi.recipe.GeodeGenEmiRecipe;
 import cc.abbie.emi_ores.compat.emi.recipe.OreGenEmiRecipe;
@@ -40,11 +41,12 @@ public class EmiOresEmiPlugin implements EmiPlugin {
             if (features.isEmpty()) return;
 
             features.forEach((id, placedFeature) -> {
+                ResourceLocation syntheticId = EmiOres.id("/placed_feature/" + id.getNamespace() + "/" + id.getPath());
                 FeatureConfiguration fc = placedFeature.feature().value().config();
                 if (fc instanceof OreConfiguration)
-                    consumer.accept(new OreGenEmiRecipe(placedFeature, id));
+                    consumer.accept(new OreGenEmiRecipe(placedFeature, syntheticId));
                 else if (fc instanceof GeodeConfiguration)
-                    consumer.accept(new GeodeGenEmiRecipe(placedFeature, id));
+                    consumer.accept(new GeodeGenEmiRecipe(placedFeature, syntheticId));
             });
         });
     }
