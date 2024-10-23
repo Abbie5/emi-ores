@@ -41,12 +41,11 @@ public class EmiOresEmiPlugin implements EmiPlugin {
             if (features.isEmpty()) return;
 
             features.forEach((id, placedFeature) -> {
-                ResourceLocation syntheticId = EmiOres.id("/placed_feature/" + id.getNamespace() + "/" + id.getPath());
                 FeatureConfiguration fc = placedFeature.feature().value().config();
                 if (fc instanceof OreConfiguration)
-                    consumer.accept(new OreGenEmiRecipe(placedFeature, syntheticId));
+                    consumer.accept(new OreGenEmiRecipe(placedFeature, id));
                 else if (fc instanceof GeodeConfiguration)
-                    consumer.accept(new GeodeGenEmiRecipe(placedFeature, syntheticId));
+                    consumer.accept(new GeodeGenEmiRecipe(placedFeature, id));
             });
         });
     }
