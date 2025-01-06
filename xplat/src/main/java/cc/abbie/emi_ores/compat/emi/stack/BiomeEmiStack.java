@@ -10,8 +10,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -27,7 +27,7 @@ public class BiomeEmiStack extends EmiStack {
         this.biome = biome;
     }
 
-    public static EmiStack of(Biome biome, DataComponentPatch componentChanges, long amount) {
+    public static EmiStack of(Biome biome, CompoundTag tag, long amount) {
         return new BiomeEmiStack(biome);
     }
 
@@ -65,8 +65,8 @@ public class BiomeEmiStack extends EmiStack {
     }
 
     @Override
-    public DataComponentPatch getComponentChanges() {
-        return DataComponentPatch.EMPTY;
+    public CompoundTag getNbt() {
+        return null;
     }
 
     @Override
@@ -108,9 +108,9 @@ public class BiomeEmiStack extends EmiStack {
         }
 
         @Override
-        public EmiStack create(ResourceLocation id, DataComponentPatch componentChanges, long amount) {
+        public EmiStack create(ResourceLocation id, CompoundTag nbt, long amount) {
             Registry<Biome> biomeRegistry = Minecraft.getInstance().level.registryAccess().registryOrThrow(Registries.BIOME);
-            return BiomeEmiStack.of(biomeRegistry.get(id), componentChanges, amount);
+            return BiomeEmiStack.of(biomeRegistry.get(id), nbt, amount);
         }
     }
 }
