@@ -8,7 +8,6 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,7 +31,7 @@ public class FeaturesSender {
         Map<ResourceLocation, PlacedFeature> featureMap = new HashMap<>();
         SetMultimap<ResourceKey<PlacedFeature>, ResourceKey<Biome>> features2biomes = HashMultimap.create();
         RegistryAccess access = player.server.registryAccess();
-        Registry<PlacedFeature> placedFeatureRegistry = access.registryOrThrow(Registries.PLACED_FEATURE);
+        Registry<PlacedFeature> placedFeatureRegistry = access.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
         placedFeatureRegistry.entrySet().forEach(entry -> {
             // we only care about ore features for now
             PlacedFeature pf = entry.getValue();
@@ -48,7 +47,7 @@ public class FeaturesSender {
                 featureMap.put(entry.getKey().location(), new PlacedFeature(pf.feature(), newModifiers));
             }
         });
-        access.registryOrThrow(Registries.BIOME).entrySet().forEach(biomeEntry -> {
+        access.registryOrThrow(Registry.BIOME_REGISTRY).entrySet().forEach(biomeEntry -> {
             biomeEntry.getValue().getGenerationSettings().features().forEach(placedFeatureHolderSet -> {
                 placedFeatureHolderSet.forEach(placedFeatureHolder -> {
                     placedFeatureHolder.unwrapKey().ifPresent(placedFeatureResourceKey -> {

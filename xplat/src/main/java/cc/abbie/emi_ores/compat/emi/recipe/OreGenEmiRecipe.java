@@ -10,7 +10,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.TextWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.IntProvider;
@@ -52,7 +52,7 @@ public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
             var target = targetBlockState.target;
             if (target instanceof TagMatchTest tagMatchTest) {
                 var tag = ((TagMatchTestAccessor) tagMatchTest).getTag();
-                List<EmiIngredient> l = BuiltInRegistries.BLOCK.getOrCreateTag(tag).stream()
+                List<EmiIngredient> l = Registry.BLOCK.getOrCreateTag(tag).stream()
                         .map(Holder::value)
                         .map(EmiStack::of)
                         .collect(Collectors.toList());

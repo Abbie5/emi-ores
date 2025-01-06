@@ -4,7 +4,7 @@ import cc.abbie.emi_ores.EmiOres;
 import cc.abbie.emi_ores.client.FeaturesReciever;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -23,8 +23,8 @@ public class S2CSendBiomeInfoPacket implements Packet<S2CSendBiomeInfoPacket> {
     public S2CSendBiomeInfoPacket(FriendlyByteBuf buf) {
         this.multimap = HashMultimap.create();
         buf.readMap(
-                buf1 -> buf1.readResourceKey(Registries.PLACED_FEATURE),
-                buf1 -> buf1.readList(buf2 -> buf2.readResourceKey(Registries.BIOME))
+                buf1 -> buf1.readResourceKey(Registry.PLACED_FEATURE_REGISTRY),
+                buf1 -> buf1.readList(buf2 -> buf2.readResourceKey(Registry.BIOME_REGISTRY))
         ).forEach(this.multimap::putAll);
     }
 
