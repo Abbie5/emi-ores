@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.biome.Biome;
@@ -128,7 +129,7 @@ public class BiomeEmiStack extends EmiStack {
         @Override
         public EmiStack create(ResourceLocation id, CompoundTag nbt, long amount) {
             Registry<Biome> biomeRegistry = Minecraft.getInstance().level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
-            return BiomeEmiStack.of(biomeRegistry.get(id), nbt, amount);
+            return BiomeEmiStack.of(biomeRegistry.getOrThrow(ResourceKey.create(Registry.BIOME_REGISTRY, id)), nbt, amount);
         }
     }
 }
