@@ -30,9 +30,11 @@
     "emi_ores.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.0",
-    "fabric": "*",
-    "minecraft": "${minecraft_version}",
+    "fabricloader": ">=0.15.11",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  },
+  "recommends": {
     "emi": ">=${emi_version}"
   }
 }

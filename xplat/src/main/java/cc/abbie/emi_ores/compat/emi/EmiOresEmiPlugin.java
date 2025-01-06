@@ -1,14 +1,5 @@
 package cc.abbie.emi_ores.compat.emi;
 
-import cc.abbie.emi_ores.client.FeaturesReciever;
-import cc.abbie.emi_ores.compat.emi.recipe.GeodeGenEmiRecipe;
-import cc.abbie.emi_ores.compat.emi.recipe.OreGenEmiRecipe;
-import cc.abbie.emi_ores.compat.emi.stack.BiomeEmiStack;
-import dev.emi.emi.api.EmiEntrypoint;
-import dev.emi.emi.api.EmiInitRegistry;
-import dev.emi.emi.api.EmiPlugin;
-import dev.emi.emi.api.EmiRegistry;
-import dev.emi.emi.api.stack.EmiRegistryAdapter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -18,18 +9,32 @@ import net.minecraft.world.level.levelgen.feature.configurations.GeodeConfigurat
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
+import cc.abbie.emi_ores.client.FeaturesReciever;
+import cc.abbie.emi_ores.compat.emi.recipe.GeodeGenEmiRecipe;
+import cc.abbie.emi_ores.compat.emi.recipe.OreGenEmiRecipe;
+import cc.abbie.emi_ores.compat.emi.stack.BiomeEmiStack;
+import cc.abbie.emi_ores.client.config.EmiOresClientConfig;
+import dev.emi.emi.api.EmiEntrypoint;
+import dev.emi.emi.api.EmiInitRegistry;
+import dev.emi.emi.api.EmiPlugin;
+import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.stack.EmiRegistryAdapter;
+
 import java.util.Map;
 
 @EmiEntrypoint
 public class EmiOresEmiPlugin implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
+        EmiOresClientConfig.load();
         Minecraft client = Minecraft.getInstance();
-        client.level.registryAccess()
-                .registryOrThrow(Registry.BIOME_REGISTRY)
-                .stream()
-                .map(BiomeEmiStack::of)
-                .forEach(registry::addEmiStack);
+        if (EmiOresClientConfig.INSTANCE.addBiomesToIndex()) {
+            client.level.registryAccess()
+                    .registryOrThrow(Registry.BIOME_REGISTRY)
+                    .stream()
+                    .map(BiomeEmiStack::of)
+                    .forEach(registry::addEmiStack);
+        }
 
         registry.addCategory(EmiOresRecipeCategories.OREGEN);
         registry.addCategory(EmiOresRecipeCategories.GEODE);

@@ -1,5 +1,6 @@
 package cc.abbie.emi_ores.compat.emi.recipe;
 
+import cc.abbie.emi_ores.EmiOres;
 import cc.abbie.emi_ores.compat.emi.EmiOresRecipeCategories;
 import cc.abbie.emi_ores.compat.emi.stack.BiomeEmiStack;
 import cc.abbie.emi_ores.mixin.accessor.*;
@@ -119,7 +120,7 @@ public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
 
     @Override
     public ResourceLocation getId() {
-        return id;
+        return EmiOres.id("/ore/" + id.getNamespace() + "/" + id.getPath());
     }
 
     @Override

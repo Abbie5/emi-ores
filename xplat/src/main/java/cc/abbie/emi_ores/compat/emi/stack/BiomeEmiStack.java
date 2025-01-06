@@ -2,6 +2,8 @@ package cc.abbie.emi_ores.compat.emi.stack;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import cc.abbie.emi_ores.EmiOres;
 import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.serializer.EmiStackSerializer;
@@ -9,6 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -21,10 +24,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BiomeEmiStack extends EmiStack {
+    private static final ResourceLocation missingSpriteId = EmiOres.id("emi_ores/biome_icon/missing");
+    
     private final Biome biome;
+    private final TextureAtlasSprite sprite;
 
     private BiomeEmiStack(Biome biome) {
         this.biome = biome;
+
+        var atlas = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS);
+        ResourceLocation id = getId();
+
+        TextureAtlasSprite sprite;
+        if (id == null) {
+            sprite = atlas.getSprite(missingSpriteId);
+        } else {
+            sprite = atlas.getSprite(new ResourceLocation(getId().getNamespace(), "emi_ores/biome_icon/" + getId().getPath()));
+
+            if (MissingTextureAtlasSprite.getLocation().equals(sprite.getName())) {
+                sprite = atlas.getSprite(missingSpriteId);
+            }
+        }
+
+        this.sprite = sprite;
     }
 
     public static EmiStack of(Biome biome, CompoundTag tag, long amount) {
@@ -42,15 +64,9 @@ public class BiomeEmiStack extends EmiStack {
 
     @Override
     public void render(PoseStack pose, int x, int y, float delta, int flags) {
-        Minecraft client = Minecraft.getInstance();
-
         if ((flags & RENDER_ICON) != 0) {
             pose.pushPose();
             pose.translate(0, 0, 150);
-
-            TextureAtlasSprite sprite = client.getModelManager()
-                    .getAtlas(InventoryMenu.BLOCK_ATLAS)
-                    .getSprite(new ResourceLocation(getId().getNamespace(), "emi_ores/biome_icon/" + getId().getPath()));
 
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
