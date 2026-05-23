@@ -14,6 +14,7 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.network.registration.NetworkRegistry;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class EmiOresNeoForge {
         List<ServerPlayer> players = event.getPlayer() == null ? event.getPlayerList().getPlayers() : List.of(event.getPlayer());
         players.forEach(player -> FeaturesSender.onSyncDataPackContents(
                 player,
-                (p, t) -> true,
+                (p, t) -> NetworkRegistry.hasChannel(p.connection, t.id()),
                 PacketDistributor::sendToPlayer
         ));
     }
