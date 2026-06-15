@@ -29,7 +29,7 @@ public class BiomeSpriteRegistry {
         @Override
         public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
             return CompletableFuture.runAsync(() -> {
-                biomeSprites = resourceManager.listResources("textures/emi_ores/biome_icon", i -> i.getPath().endsWith(".png")).keySet();
+                biomeSprites = resourceManager.listResources("textures/biome", i -> i.getPath().endsWith(".png")).keySet();
             }, backgroundExecutor).thenCompose(preparationBarrier::wait);
         }
     }

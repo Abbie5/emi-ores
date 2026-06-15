@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BiomeEmiStack extends EmiStack {
-    private static final ResourceLocation missingSpriteId = EmiOres.id("emi_ores/biome_icon/missing");
+    private static final ResourceLocation missingSpriteId = EmiOres.id("biome/missing");
     
     private final Biome biome;
     private final TextureAtlasSprite sprite;
@@ -33,14 +34,14 @@ public class BiomeEmiStack extends EmiStack {
     private BiomeEmiStack(Biome biome) {
         this.biome = biome;
 
-        var atlas = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS);
+        TextureAtlas atlas = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS);
         ResourceLocation id = getId();
 
         TextureAtlasSprite sprite;
         if (id == null) {
             sprite = atlas.getSprite(missingSpriteId);
         } else {
-            sprite = atlas.getSprite(new ResourceLocation(getId().getNamespace(), "emi_ores/biome_icon/" + getId().getPath()));
+            sprite = atlas.getSprite(new ResourceLocation(getId().getNamespace(), "biome/" + getId().getPath()));
 
             if (MissingTextureAtlasSprite.getLocation().equals(sprite.getName())) {
                 sprite = atlas.getSprite(missingSpriteId);

@@ -1,4 +1,8 @@
 {
-  "emi_ores:oregen": 400,
-  "emi_ores:geode": 400
+  "emi_ores:oregen": {
+    "order": 400
+  },
+  "emi_ores:geode": {
+    "order": 400
+  }
 }

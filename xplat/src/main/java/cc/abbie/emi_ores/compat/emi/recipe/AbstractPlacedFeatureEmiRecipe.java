@@ -2,6 +2,7 @@ package cc.abbie.emi_ores.compat.emi.recipe;
 
 import cc.abbie.emi_ores.EmiOres;
 import cc.abbie.emi_ores.client.FeaturesReciever;
+import cc.abbie.emi_ores.client.config.EmiOresClientConfig;
 import cc.abbie.emi_ores.mixin.accessor.TrapezoidHeightAccessor;
 import cc.abbie.emi_ores.mixin.accessor.UniformHeightAccessor;
 import dev.emi.emi.api.recipe.EmiRecipe;
@@ -9,6 +10,9 @@ import dev.emi.emi.api.widget.TextWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -28,27 +32,37 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
 
     private static final ResourceLocation DISTRIBUTION = EmiOres.id("textures/gui/distribution.png");
 
-    protected static Component anchorText(VerticalAnchor anchor) {
+    private static Component anchorText(VerticalAnchor anchor) {
         String s;
         if (anchor instanceof VerticalAnchor.Absolute absolute) {
             s = String.valueOf(absolute.y());
         } else if (anchor instanceof VerticalAnchor.AboveBottom aboveBottom) {
             int offset = aboveBottom.offset();
-            if (offset == 0) {
-                s = "bot";
-            } else if (offset > 0) {
-                s = "bot+" + offset;
+            if (useCurrentDimension()) {
+                int height = Minecraft.getInstance().level.getMinBuildHeight() + offset;
+                s = String.valueOf(height);
             } else {
-                s = "bot" + offset;
+                if (offset == 0) {
+                    s = "bot";
+                } else if (offset > 0) {
+                    s = "bot+" + offset;
+                } else {
+                    s = "bot" + offset;
+                }
             }
         } else if (anchor instanceof VerticalAnchor.BelowTop belowTop) {
             int offset = -belowTop.offset();
-            if (offset == 0) {
-                s = "top";
-            } else if (offset > 0) {
-                s = "top+" + offset;
+            if (useCurrentDimension()) {
+                int height = Minecraft.getInstance().level.getMaxBuildHeight() + offset;
+                s = String.valueOf(height);
             } else {
-                s = "top" + offset;
+                if (offset == 0) {
+                    s = "top";
+                } else if (offset > 0) {
+                    s = "top+" + offset;
+                } else {
+                    s = "top" + offset;
+                }
             }
         } else {
             throw new RuntimeException();
@@ -56,7 +70,7 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
         return Component.literal(s);
     }
 
-    protected static Component anchorTextLong(VerticalAnchor anchor) {
+    private static Component anchorTextLong(VerticalAnchor anchor) {
         return anchorTextLongInner(anchor).withStyle(ChatFormatting.WHITE);
     }
 
@@ -65,21 +79,31 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
             return Component.literal(String.valueOf(absolute.y()));
         } else if (anchor instanceof VerticalAnchor.AboveBottom aboveBottom) {
             int offset = aboveBottom.offset();
-            if (offset == 0) {
-                return Component.translatable("emi_ores.distribution.anchor.bottom");
-            } else if (offset > 0) {
-                return Component.translatable("emi_ores.distribution.anchor.above_bottom", offset);
+            if (useCurrentDimension()) {
+                int height = Minecraft.getInstance().level.getMinBuildHeight() + offset;
+                return Component.literal(String.valueOf(height));
             } else {
-                return Component.translatable("emi_ores.distribution.anchor.below_bottom", -offset);
+                if (offset == 0) {
+                    return Component.translatable("emi_ores.distribution.anchor.bottom");
+                } else if (offset > 0) {
+                    return Component.translatable("emi_ores.distribution.anchor.above_bottom", offset);
+                } else {
+                    return Component.translatable("emi_ores.distribution.anchor.below_bottom", -offset);
+                }
             }
         } else if (anchor instanceof VerticalAnchor.BelowTop belowTop) {
             int offset = -belowTop.offset();
-            if (offset == 0) {
-                return Component.translatable("emi_ores.distribution.anchor.top");
-            } else if (offset > 0) {
-                return Component.translatable("emi_ores.distribution.anchor.above_top", offset);
+            if (useCurrentDimension()) {
+                int height = Minecraft.getInstance().level.getMaxBuildHeight() + offset;
+                return Component.literal(String.valueOf(height));
             } else {
-                return Component.translatable("emi_ores.distribution.anchor.below_top", -offset);
+                if (offset == 0) {
+                    return Component.translatable("emi_ores.distribution.anchor.top");
+                } else if (offset > 0) {
+                    return Component.translatable("emi_ores.distribution.anchor.above_top", offset);
+                } else {
+                    return Component.translatable("emi_ores.distribution.anchor.below_top", -offset);
+                }
             }
         } else {
             throw new RuntimeException();
@@ -93,6 +117,27 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
                 .stream()
                 .map(biomeRegistry::get)
                 .toList();
+    }
+    
+    private static void addAnchorText(WidgetHolder widgets, VerticalAnchor anchor, int x, int y, TextWidget.Alignment verticalAlign, TextWidget.Alignment horizontalAlign) {
+        Font font = Minecraft.getInstance().font;
+        
+        widgets.addDrawable(x, y, 0, 0, (gui, mouseX, mouseY, delta) -> {
+            Component text = anchorText(anchor);
+            int textWidth = font.width(text);
+            int textHeight = font.lineHeight;
+            int textX = switch (horizontalAlign) {
+                case START -> 0;
+                case CENTER -> -textWidth/2;
+                case END -> -textWidth;
+            };
+            int textY = switch (verticalAlign) {
+                case START -> 0;
+                case CENTER -> -textHeight/2;
+                case END -> -textHeight;
+            };
+            font.draw(gui, text, textX, textY, 0);
+        });
     }
 
     protected static void addDistributionGraph(WidgetHolder widgets, int x, int y, HeightProvider heightProvider) {
@@ -130,12 +175,6 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
 
             if (plateau == 0) {
                 type = HeightProviderType.TRIANGULAR;
-
-                if (midLow != null) {
-                    widgets.addText(anchorText(midLow), 80, 8, 0, false)
-                            .verticalAlign(TextWidget.Alignment.CENTER)
-                            .horizontalAlign(TextWidget.Alignment.CENTER);
-                }
             } else {
                 type = HeightProviderType.TRAPEZOID;
             }
@@ -145,18 +184,17 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
         }
 
         if (type != null && min != null && max != null) {
-            widgets.addTexture(DISTRIBUTION, x, y, 32, 16, 0, type.v)
-                    .tooltipText(getDistributionGraphTooltip(type, min, max, midLow, midHigh));
-            widgets.addText(anchorText(min), x, y+8, 0, false)
-                    .verticalAlign(TextWidget.Alignment.CENTER)
-                    .horizontalAlign(TextWidget.Alignment.END);
-            widgets.addText(anchorText(max), x+32, y+8, 0, false)
-                    .verticalAlign(TextWidget.Alignment.CENTER)
-                    .horizontalAlign(TextWidget.Alignment.START);
+            widgets.addTexture(DISTRIBUTION, x, y, 32, 16, 0, type.v);
+            widgets.addTooltip((mouseX, mouseY) -> getDistributionGraphTooltip(type, min, max, midLow, midHigh), x, y, 32, 16);
+            addAnchorText(widgets, min, x, y+8, TextWidget.Alignment.CENTER, TextWidget.Alignment.END);
+            addAnchorText(widgets, max, x+32, y+8, TextWidget.Alignment.CENTER, TextWidget.Alignment.START);
+            if (type == HeightProviderType.TRIANGULAR && midLow != null) {
+                addAnchorText(widgets, midLow, 80, 8, TextWidget.Alignment.CENTER, TextWidget.Alignment.CENTER);
+            }
         }
     }
 
-    protected static List<Component> getDistributionGraphTooltip(HeightProviderType type, VerticalAnchor min, VerticalAnchor max, VerticalAnchor midLow, VerticalAnchor midHigh) {
+    private static List<ClientTooltipComponent> getDistributionGraphTooltip(HeightProviderType type, VerticalAnchor min, VerticalAnchor max, VerticalAnchor midLow, VerticalAnchor midHigh) {
         List<Component> tooltip = new ArrayList<>();
 
         tooltip.add(type.name);
@@ -168,7 +206,15 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
                 tooltip.add(Component.translatable("emi_ores.distribution.middle_range", anchorTextLong(midLow), anchorTextLong(midHigh)).withStyle(ChatFormatting.GRAY));
             }
         }
-        return tooltip;
+        if (hasAnyRelative(min, max, midLow, midHigh)) {
+            if (useCurrentDimension()) {
+                tooltip.add(Component.translatable("emi_ores.distribution.dimension", Minecraft.getInstance().level.dimension().location()).withStyle(ChatFormatting.GRAY));
+                if (!Screen.hasShiftDown()) tooltip.add(Component.translatable("emi_ores.distribution.shift.relative").withStyle(ChatFormatting.GRAY));
+            } else if (!Screen.hasShiftDown()) {
+                tooltip.add(Component.translatable("emi_ores.distribution.shift.dimension").withStyle(ChatFormatting.GRAY));
+            }
+        }
+        return tooltip.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
     }
 
     protected static Component getVeinFreqComponent(int countMin, int countMax, int rarityChance) {
@@ -185,6 +231,19 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
             veinFreq = null;
         }
         return veinFreq;
+    }
+
+    private static boolean useCurrentDimension() {
+        return Screen.hasShiftDown() != EmiOresClientConfig.INSTANCE.showHeightValuesForCurrentDimensionByDefault();
+    }
+    
+    private static boolean hasAnyRelative(VerticalAnchor... anchors) {
+        for (VerticalAnchor anchor : anchors) {
+            if (anchor instanceof VerticalAnchor.AboveBottom || anchor instanceof VerticalAnchor.BelowTop) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected enum HeightProviderType {

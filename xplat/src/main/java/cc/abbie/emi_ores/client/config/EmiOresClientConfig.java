@@ -18,14 +18,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public record EmiOresClientConfig(
-        boolean addBiomesToIndex
+        boolean addBiomesToIndex,
+        boolean showHeightValuesForCurrentDimensionByDefault
 ) {
     public static Codec<EmiOresClientConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.BOOL.fieldOf("add_biomes_to_index").forGetter(EmiOresClientConfig::addBiomesToIndex)
+            Codec.BOOL.fieldOf("add_biomes_to_index").forGetter(EmiOresClientConfig::addBiomesToIndex),
+            Codec.BOOL.fieldOf("show_height_values_for_current_dimension_by_default").forGetter(EmiOresClientConfig::showHeightValuesForCurrentDimensionByDefault)
     ).apply(instance, EmiOresClientConfig::new));
 
     private static final EmiOresClientConfig DEFAULT = new EmiOresClientConfig(
-            true
+            true,
+            false
     );
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
