@@ -46,14 +46,12 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
         this.id = id;
         HeightProvider heightProvider = null;
         int rarityChance = -1;
-        List<Biome> biomes = List.of();
+        List<Biome> biomes = getBiomes(id, feature);
         for (PlacementModifier modifier : feature.placement()) {
             if (modifier instanceof HeightRangePlacement heightRangePlacement) {
                 heightProvider = ((HeightRangePlacementAccessor) heightRangePlacement).getHeight();
             } else if (modifier instanceof RarityFilter rarityFilter) {
                 rarityChance = ((RarityFilterAccessor) rarityFilter).getChance();
-            } else if (modifier instanceof BiomeFilter) {
-                biomes = getBiomes(id, feature);
             }
         }
         this.heightProvider = heightProvider;

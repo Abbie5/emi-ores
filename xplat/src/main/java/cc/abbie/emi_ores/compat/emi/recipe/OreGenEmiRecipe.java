@@ -14,9 +14,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ScatteredOreFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
@@ -50,29 +53,29 @@ public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
         this.discardChanceOnAirExposure = oreConfig.discardChanceOnAirExposure;
 
         oreConfig.targetStates.forEach(targetBlockState -> {
-            var target = targetBlockState.target;
+            RuleTest target = targetBlockState.target;
             if (target instanceof TagMatchTest tagMatchTest) {
-                var tag = ((TagMatchTestAccessor) tagMatchTest).getTag();
+                TagKey<Block> tag = ((TagMatchTestAccessor) tagMatchTest).getTag();
                 List<EmiIngredient> l = BuiltInRegistries.BLOCK.getOrCreateTag(tag).stream()
                         .map(Holder::value)
                         .map(EmiStack::of)
                         .collect(Collectors.toList());
                 inputs.add(EmiIngredient.of(l));
             } else if (target instanceof BlockMatchTest blockMatchTest) {
-                var block = ((BlockMatchTestAccessor) blockMatchTest).getBlock();
+                Block block = ((BlockMatchTestAccessor) blockMatchTest).getBlock();
                 inputs.add(EmiStack.of(block));
             } else if (target instanceof BlockStateMatchTest blockStateMatchTest) {
-                var state = ((BlockStateMatchTestAccessor) blockStateMatchTest).getBlockState();
+                BlockState state = ((BlockStateMatchTestAccessor) blockStateMatchTest).getBlockState();
                 inputs.add(EmiStack.of(state.getBlock()));
             } else if (target instanceof RandomBlockMatchTest randomBlockMatchTest) {
                 RandomBlockMatchTestAccessor accessor = (RandomBlockMatchTestAccessor) randomBlockMatchTest;
-                var block = accessor.getBlock();
-                var probability = accessor.getProbability();
+                Block block = accessor.getBlock();
+                float probability = accessor.getProbability();
                 inputs.add(EmiStack.of(block).setChance(probability));
             } else if (target instanceof RandomBlockStateMatchTest randomBlockStateMatchTest) {
                 RandomBlockStateMatchTestAccessor accessor = (RandomBlockStateMatchTestAccessor) randomBlockStateMatchTest;
-                var block = accessor.getBlockState().getBlock();
-                var probability = accessor.getProbability();
+                Block block = accessor.getBlockState().getBlock();
+                float probability = accessor.getProbability();
                 inputs.add(EmiStack.of(block).setChance(probability));
             } else {
                 inputs.add(EmiStack.EMPTY);
@@ -84,15 +87,13 @@ public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
         this.outputs = Collections.unmodifiableList(outputs);
 
         HeightProvider heightProvider = null;
-        List<Biome> biomes = List.of();
+        List<Biome> biomes = getBiomes(id, feature);
         int countMin = -1;
         int countMax = -1;
         int rarityChance = -1;
         for (PlacementModifier modifier : feature.placement()) {
             if (modifier instanceof HeightRangePlacement heightRange) {
                 heightProvider = ((HeightRangePlacementAccessor) heightRange).getHeight();
-            } else if (modifier instanceof BiomeFilter) {
-                biomes = getBiomes(id, feature);
             } else if (modifier instanceof CountPlacement countPlacement) {
                 IntProvider countIntProvider = ((CountPlacementAccessor) countPlacement).getCount();
                 countMin = countIntProvider.getMinValue();
