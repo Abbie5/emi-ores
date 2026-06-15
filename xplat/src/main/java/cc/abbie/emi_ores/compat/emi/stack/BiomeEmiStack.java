@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BiomeEmiStack extends EmiStack {
-    private static final ResourceLocation missingSpriteId = EmiOres.id("emi_ores/biome_icon/missing");
+    private static final ResourceLocation missingSpriteId = EmiOres.id("biome/missing");
     
     private final Biome biome;
     private final TextureAtlasSprite sprite;
@@ -41,7 +41,7 @@ public class BiomeEmiStack extends EmiStack {
         if (id == null) {
             sprite = atlas.getSprite(missingSpriteId);
         } else {
-            sprite = atlas.getSprite(getId().withPrefix("emi_ores/biome_icon/"));
+            sprite = atlas.getSprite(getId().withPrefix("biome/"));
 
             if (MissingTextureAtlasSprite.getLocation().equals(sprite.contents().name())) {
                 sprite = atlas.getSprite(missingSpriteId);
