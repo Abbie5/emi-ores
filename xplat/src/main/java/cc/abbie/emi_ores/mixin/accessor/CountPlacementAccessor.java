@@ -7,6 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(CountPlacement.class)
 public interface CountPlacementAccessor {
-    @Accessor
-    IntProvider getCount();
+    @Accessor("count")
+    IntProvider emi_ores$getCount();
 }

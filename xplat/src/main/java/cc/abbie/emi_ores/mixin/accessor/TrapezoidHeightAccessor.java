@@ -7,12 +7,12 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(TrapezoidHeight.class)
 public interface TrapezoidHeightAccessor {
-    @Accessor
-    VerticalAnchor getMinInclusive();
+    @Accessor("minInclusive")
+    VerticalAnchor emi_ores$getMinInclusive();
 
-    @Accessor
-    VerticalAnchor getMaxInclusive();
+    @Accessor("maxInclusive")
+    VerticalAnchor emi_ores$getMaxInclusive();
 
-    @Accessor
-    int getPlateau();
+    @Accessor("plateau")
+    int emi_ores$getPlateau();
 }

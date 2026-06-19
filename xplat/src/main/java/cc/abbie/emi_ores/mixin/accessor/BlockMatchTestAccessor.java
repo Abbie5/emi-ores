@@ -7,6 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(BlockMatchTest.class)
 public interface BlockMatchTestAccessor {
-    @Accessor
-    Block getBlock();
+    @Accessor("block")
+    Block emi_ores$getBlock();
 }

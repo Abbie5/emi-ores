@@ -7,9 +7,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(RandomBlockStateMatchTest.class)
 public interface RandomBlockStateMatchTestAccessor {
-    @Accessor
-    BlockState getBlockState();
+    @Accessor("blockState")
+    BlockState emi_ores$getBlockState();
 
-    @Accessor
-    float getProbability();
+    @Accessor("probability")
+    float emi_ores$getProbability();
 }

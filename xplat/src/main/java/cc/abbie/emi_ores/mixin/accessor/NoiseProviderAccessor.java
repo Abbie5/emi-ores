@@ -9,6 +9,6 @@ import java.util.List;
 
 @Mixin(NoiseProvider.class)
 public interface NoiseProviderAccessor {
-    @Accessor
-    List<BlockState> getStates();
+    @Accessor("states")
+    List<BlockState> emi_ores$getStates();
 }

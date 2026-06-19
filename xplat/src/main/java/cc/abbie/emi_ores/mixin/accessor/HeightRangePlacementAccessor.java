@@ -7,6 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(HeightRangePlacement.class)
 public interface HeightRangePlacementAccessor {
-    @Accessor
-    HeightProvider getHeight();
+    @Accessor("height")
+    HeightProvider emi_ores$getHeight();
 }

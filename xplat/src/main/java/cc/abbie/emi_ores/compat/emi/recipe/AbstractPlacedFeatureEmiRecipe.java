@@ -150,15 +150,15 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
         if (heightProvider instanceof UniformHeight uniform) {
             type = HeightProviderType.UNIFORM;
             UniformHeightAccessor accessor = (UniformHeightAccessor) uniform;
-            min = accessor.getMinInclusive();
-            max = accessor.getMaxInclusive();
+            min = accessor.emi_ores$getMinInclusive();
+            max = accessor.emi_ores$getMaxInclusive();
             midLow = midHigh = null;
         } else if (heightProvider instanceof TrapezoidHeight trapezoid) {
             TrapezoidHeightAccessor accessor = (TrapezoidHeightAccessor) trapezoid;
-            min = accessor.getMinInclusive();
-            max = accessor.getMaxInclusive();
+            min = accessor.emi_ores$getMinInclusive();
+            max = accessor.emi_ores$getMaxInclusive();
 
-            int plateau = accessor.getPlateau();
+            int plateau = accessor.emi_ores$getPlateau();
 
             // if the min and max are the same type, we can calculate the y-level with the highest frequency
             if (min instanceof VerticalAnchor.Absolute minAbs && max instanceof VerticalAnchor.Absolute maxAbs) {

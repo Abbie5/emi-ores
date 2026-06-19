@@ -8,6 +8,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(WeightedStateProvider.class)
 public interface WeightedStateProviderAccessor {
-    @Accessor
-    SimpleWeightedRandomList<BlockState> getWeightedList();
+    @Accessor("weightedList")
+    SimpleWeightedRandomList<BlockState> emi_ores$getWeightedList();
 }

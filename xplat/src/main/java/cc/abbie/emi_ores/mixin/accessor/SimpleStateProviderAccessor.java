@@ -7,6 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(SimpleStateProvider.class)
 public interface SimpleStateProviderAccessor {
-    @Accessor
-    BlockState getState();
+    @Accessor("state")
+    BlockState emi_ores$getState();
 }

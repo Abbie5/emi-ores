@@ -7,9 +7,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(UniformHeight.class)
 public interface UniformHeightAccessor {
-    @Accessor
-    VerticalAnchor getMaxInclusive();
+    @Accessor("maxInclusive")
+    VerticalAnchor emi_ores$getMaxInclusive();
 
-    @Accessor
-    VerticalAnchor getMinInclusive();
+    @Accessor("minInclusive")
+    VerticalAnchor emi_ores$getMinInclusive();
 }

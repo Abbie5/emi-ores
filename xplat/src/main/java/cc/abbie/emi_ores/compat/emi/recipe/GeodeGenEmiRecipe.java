@@ -49,9 +49,9 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
         List<Biome> biomes = getBiomes(id, feature);
         for (PlacementModifier modifier : feature.placement()) {
             if (modifier instanceof HeightRangePlacement heightRangePlacement) {
-                heightProvider = ((HeightRangePlacementAccessor) heightRangePlacement).getHeight();
+                heightProvider = ((HeightRangePlacementAccessor) heightRangePlacement).emi_ores$getHeight();
             } else if (modifier instanceof RarityFilter rarityFilter) {
-                rarityChance = ((RarityFilterAccessor) rarityFilter).getChance();
+                rarityChance = ((RarityFilterAccessor) rarityFilter).emi_ores$getChance();
             }
         }
         this.heightProvider = heightProvider;
@@ -87,10 +87,10 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
 
     private static EmiIngredient ingredientForStateProvider(BlockStateProvider provider) {
         if (provider instanceof SimpleStateProvider simple) {
-            return EmiStack.of(((SimpleStateProviderAccessor) simple).getState().getBlock());
+            return EmiStack.of(((SimpleStateProviderAccessor) simple).emi_ores$getState().getBlock());
         } else if (provider instanceof WeightedStateProvider weighted) {
             // ignore the weights
-            return EmiIngredient.of(((WeightedStateProviderAccessor) weighted).getWeightedList()
+            return EmiIngredient.of(((WeightedStateProviderAccessor) weighted).emi_ores$getWeightedList()
                     .unwrap()
                     .stream()
                     .map(WeightedEntry.Wrapper::data)
@@ -98,7 +98,7 @@ public class GeodeGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
                     .map(EmiStack::of)
                     .toList());
         } else if (provider instanceof NoiseProvider noise) {
-            return EmiIngredient.of(((NoiseProviderAccessor) noise).getStates()
+            return EmiIngredient.of(((NoiseProviderAccessor) noise).emi_ores$getStates()
                     .stream()
                     .map(BlockState::getBlock)
                     .distinct()

@@ -8,6 +8,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(TagMatchTest.class)
 public interface TagMatchTestAccessor {
-    @Accessor
-    TagKey<Block> getTag();
+    @Accessor("tag")
+    TagKey<Block> emi_ores$getTag();
 }

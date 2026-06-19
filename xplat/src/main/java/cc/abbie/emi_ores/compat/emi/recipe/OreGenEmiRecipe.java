@@ -55,27 +55,27 @@ public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
         oreConfig.targetStates.forEach(targetBlockState -> {
             RuleTest target = targetBlockState.target;
             if (target instanceof TagMatchTest tagMatchTest) {
-                TagKey<Block> tag = ((TagMatchTestAccessor) tagMatchTest).getTag();
+                TagKey<Block> tag = ((TagMatchTestAccessor) tagMatchTest).emi_ores$getTag();
                 List<EmiIngredient> l = BuiltInRegistries.BLOCK.getOrCreateTag(tag).stream()
                         .map(Holder::value)
                         .map(EmiStack::of)
                         .collect(Collectors.toList());
                 inputs.add(EmiIngredient.of(l));
             } else if (target instanceof BlockMatchTest blockMatchTest) {
-                Block block = ((BlockMatchTestAccessor) blockMatchTest).getBlock();
+                Block block = ((BlockMatchTestAccessor) blockMatchTest).emi_ores$getBlock();
                 inputs.add(EmiStack.of(block));
             } else if (target instanceof BlockStateMatchTest blockStateMatchTest) {
-                BlockState state = ((BlockStateMatchTestAccessor) blockStateMatchTest).getBlockState();
+                BlockState state = ((BlockStateMatchTestAccessor) blockStateMatchTest).emi_ores$getBlockState();
                 inputs.add(EmiStack.of(state.getBlock()));
             } else if (target instanceof RandomBlockMatchTest randomBlockMatchTest) {
                 RandomBlockMatchTestAccessor accessor = (RandomBlockMatchTestAccessor) randomBlockMatchTest;
-                Block block = accessor.getBlock();
-                float probability = accessor.getProbability();
+                Block block = accessor.emi_ores$getBlock();
+                float probability = accessor.emi_ores$getProbability();
                 inputs.add(EmiStack.of(block).setChance(probability));
             } else if (target instanceof RandomBlockStateMatchTest randomBlockStateMatchTest) {
                 RandomBlockStateMatchTestAccessor accessor = (RandomBlockStateMatchTestAccessor) randomBlockStateMatchTest;
-                Block block = accessor.getBlockState().getBlock();
-                float probability = accessor.getProbability();
+                Block block = accessor.emi_ores$getBlockState().getBlock();
+                float probability = accessor.emi_ores$getProbability();
                 inputs.add(EmiStack.of(block).setChance(probability));
             } else {
                 inputs.add(EmiStack.EMPTY);
@@ -93,13 +93,13 @@ public class OreGenEmiRecipe extends AbstractPlacedFeatureEmiRecipe {
         int rarityChance = -1;
         for (PlacementModifier modifier : feature.placement()) {
             if (modifier instanceof HeightRangePlacement heightRange) {
-                heightProvider = ((HeightRangePlacementAccessor) heightRange).getHeight();
+                heightProvider = ((HeightRangePlacementAccessor) heightRange).emi_ores$getHeight();
             } else if (modifier instanceof CountPlacement countPlacement) {
-                IntProvider countIntProvider = ((CountPlacementAccessor) countPlacement).getCount();
+                IntProvider countIntProvider = ((CountPlacementAccessor) countPlacement).emi_ores$getCount();
                 countMin = countIntProvider.getMinValue();
                 countMax = countIntProvider.getMaxValue();
             } else if (modifier instanceof RarityFilter rarityFilter) {
-                rarityChance = ((RarityFilterAccessor) rarityFilter).getChance();
+                rarityChance = ((RarityFilterAccessor) rarityFilter).emi_ores$getChance();
             }
         }
 
