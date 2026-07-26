@@ -24,7 +24,7 @@ subprojects {
 
     repositories {
         maven {
-            url "https://maven.terraformersmc.com/releases/"
+            url "https://repo.sleeping.town/"
         }
         maven {
             url "https://maven.parchmentmc.org/"
