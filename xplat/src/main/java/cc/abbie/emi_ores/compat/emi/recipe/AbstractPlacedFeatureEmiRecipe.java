@@ -170,6 +170,32 @@ public abstract class AbstractPlacedFeatureEmiRecipe implements EmiRecipe {
             } else if (min instanceof VerticalAnchor.BelowTop minTop && max instanceof VerticalAnchor.BelowTop maxTop) {
                 midLow = VerticalAnchor.belowTop((minTop.offset() + maxTop.offset() - plateau) / 2);
                 midHigh = VerticalAnchor.belowTop((minTop.offset() + maxTop.offset() + plateau) / 2);
+            } else if (useCurrentDimension()) {
+                int minLocal;
+                int maxLocal;
+
+                if (min instanceof VerticalAnchor.Absolute minAbs) {
+                    minLocal = minAbs.y();
+                } else if (min instanceof VerticalAnchor.AboveBottom minBot) {
+                    minLocal = Minecraft.getInstance().level.getMinBuildHeight() + minBot.offset();
+                } else if (min instanceof VerticalAnchor.BelowTop minTop) {
+                    minLocal = Minecraft.getInstance().level.getMaxBuildHeight() - minTop.offset();
+                } else {
+                    throw new RuntimeException();
+                }
+
+                if (max instanceof VerticalAnchor.Absolute maxAbs) {
+                    maxLocal = maxAbs.y();
+                } else if (max instanceof VerticalAnchor.AboveBottom maxBot) {
+                    maxLocal = Minecraft.getInstance().level.getMinBuildHeight() + maxBot.offset();
+                } else if (max instanceof VerticalAnchor.BelowTop maxTop) {
+                    maxLocal = Minecraft.getInstance().level.getMaxBuildHeight() - maxTop.offset();
+                } else {
+                    throw new RuntimeException();
+                }
+
+                midLow = VerticalAnchor.absolute((minLocal + maxLocal - plateau) / 2);
+                midHigh = VerticalAnchor.absolute((minLocal + maxLocal + plateau) / 2);
             } else {
                 midLow = midHigh = null;
             }
