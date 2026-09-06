@@ -5,6 +5,7 @@ import cc.abbie.emi_ores.networking.payload.S2CSendFeaturesPayload;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -38,7 +39,9 @@ public class FeaturesSender {
         placedFeatureRegistry.entrySet().forEach(entry -> {
             // we only care about ore features for now
             PlacedFeature pf = entry.getValue();
-            ConfiguredFeature<?, ?> cf = pf.feature().value();
+            Holder<ConfiguredFeature<?, ?>> hcf = pf.feature();
+            if (!hcf.isBound()) return;
+            ConfiguredFeature<?, ?> cf = hcf.value();
             FeatureConfiguration fc = cf.config();
             if (fc instanceof OreConfiguration || fc instanceof GeodeConfiguration) {
                 // remove problematic placement modifiers
