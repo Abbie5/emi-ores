@@ -42,7 +42,7 @@ public class EmiOresNeoForge {
         List<ServerPlayer> players = event.getPlayer() == null ? event.getPlayerList().getPlayers() : List.of(event.getPlayer());
         players.forEach(player -> FeaturesSender.onSyncDataPackContents(
                 player,
-                (p, t) -> true,
+                (p, t) -> p.connection.hasChannel(t),
                 PacketDistributor::sendToPlayer
         ));
     }
